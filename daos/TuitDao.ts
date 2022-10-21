@@ -1,68 +1,43 @@
-import tuitModel from "../mongoose/TuitModel";
-import TuitDaoI from "../interfaces/TuitDaoI";
-import Tuit from "../models/Tuit";
-
-export default class TuitDao implements TuitDaoI {
-    private static tuitDao: TuitDao | null = null;
-    public static getInstance = (): TuitDao => {
-        if (TuitDao.tuitDao === null) {
-            TuitDao.tuitDao = new TuitDao();
-        }
-        return TuitDao.tuitDao;
-    }
-    private constructor() {}
-
-    public async findAllTuits(): Promise<Tuit[]> {
-        const tuitMongooseModels = await tuitModel.find();
-        const tuitModels = tuitMongooseModels.map((tuitMongooseModel) => 
-        {
-            return new Tuit(
-              tuitMongooseModel?._id.toString() ?? '',
-              tuitMongooseModel?.tuit ?? '',
-              new Date(tuitMongooseModel?.postedOn ?? (new Date())));
-        });
-        return tuitModels;
-    }      
-
-    public async findTuitById(id: string): Promise<Tuit> {
-        const tuitMongooseModel = await tuitModel.findById(id).populate('postedBy').exec();
-        const tuit = new Tuit(
-            tuitMongooseModel?._id.toString() ?? '',
-            tuitMongooseModel?.tuit ?? '',
-            new Date(tuitMongooseModel?.postedOn ?? (new Date())));
-        return tuit;
-    }
-
-    public async findTuitsByAuthor(authorId: string): Promise<Tuit[]> {
-    const tuitMongooseModels = await tuitModel.find({postedBy: authorId});
-    const tuitModels = tuitMongooseModels.map((tuitMongooseModel) => 
-        {
-        return new Tuit(
-            tuitMongooseModel?._id.toString() ?? '',
-            tuitMongooseModel?.tuit ?? '',
-            new Date(tuitMongooseModel?.postedOn ?? (new Date())));
-        });
-    return tuitModels;
-    }
-
-    public async createTuit(tuit: Tuit): Promise<Tuit> {
-        const tuitMongooseModel = await tuitModel.create(tuit);
-        return new Tuit(
-          tuitMongooseModel?._id.toString() ?? '',
-          tuitMongooseModel.tuit,
-          new Date(tuitMongooseModel?.postedOn ?? (new Date()))
-        )
-    }
-
-    public async deleteTuit(tuitId: string): Promise<any> {
-        return await tuitModel.deleteOne({_id: tuitId});
-    }
-
-    public async updateTuit(tuitId: string, tuit: Tuit): Promise<any> {
-        return tuitModel.updateOne(
-            {_id: tuitId},
-            {$set: {tuit: tuit.post}})
-    }
-    
-
-}
+/**
+ * @file Implements DAO managing data storage of tuits. Uses mongoose TuitModel
+ * to integrate with MongoDB
+ */
+ import TuitModel from "../mongoose/tuits/TuitModel";
+ import Tuit from "../models/tuits/Tuit";
+ import TuitDaoI from "../interfaces/TuitDaoI";
+ 
+ /**
+  * @class UserDao Implements Data Access Object managing data storage
+  * of Users
+  * @property {UserDao} userDao Private single instance of UserDao
+  */
+ export default class TuitDao implements TuitDaoI{
+     private static tuitDao: TuitDao | null = null;
+     public static getInstance = (): TuitDao => {
+         if(TuitDao.tuitDao === null) {
+             TuitDao.tuitDao = new TuitDao();
+         }
+         return TuitDao.tuitDao;
+     }
+     private constructor() {}
+     findAllTuits = async (): Promise<Tuit[]> =>
+         TuitModel.find()
+             .populate("postedBy")
+             .exec();
+     findAllTuitsByUser = async (uid: string): Promise<Tuit[]> =>
+         TuitModel.find({postedBy: uid})
+             .populate("postedBy")
+             .exec();
+     findTuitById = async (uid: string): Promise<any> =>
+         TuitModel.findById(uid)
+             .populate("postedBy")
+             .exec();
+     createTuitByUser = async (uid: string, tuit: Tuit): Promise<Tuit> =>
+         TuitModel.create({...tuit, postedBy: uid});
+     updateTuit = async (uid: string, tuit: Tuit): Promise<any> =>
+         TuitModel.updateOne(
+             {_id: uid},
+             {$set: tuit});
+     deleteTuit = async (uid: string): Promise<any> =>
+         TuitModel.deleteOne({_id: uid});
+ }

@@ -1,36 +1,51 @@
 /**
- * @file Implements an Express Node HTTP server.
+ * @file Implements an Express Node HTTP server. Declares RESTful Web services
+ * enabling CRUD operations on the following resources:
+ * <ul>
+ *     <li>users</li>
+ *     <li>tuits</li>
+ *     <li>likes</li>
+ * </ul>
+ * 
+ * Connects to a remote MongoDB instance hosted on the Atlas cloud database
+ * service
  */
-import express, {Request, Response} from 'express';
-import mongoose from 'mongoose';
-import UserDao from './daos/UserDao';
-import UserController from './controllers/UserController';
-import TuitDao from './daos/TuitDao';
-import TuitController from './controllers/TuitController';
-
-const cors = require('cors')
-const app = express();
-app.use(cors());
-app.use(express.json());
-mongoose.connect('mongodb://localhost:27017/fse');
-
-app.get('/', (req: Request, res: Response) =>
-    res.send('Welcome to Foundation of Software Engineering!!!!'));
-
-app.get('/hello', (req: Request, res: Response) =>
-    res.send('Welcome to Foundation of Software Engineering!'));
-
-/**
- * Start a server listening at port 4000 locally
- * but use environment variable PORT on Heroku if available.
- */
-const userDao = new UserDao();
-const userController = new UserController(app, userDao);
-
-const tuitDao = TuitDao.getInstance();
-const tuitController = TuitController
-  .getInstance(app, tuitDao);
-
-  const PORT = 4000;
-
-app.listen(process.env.PORT || PORT);
+ import express, {Request, Response} from 'express';
+ import UserController from "./controllers/UserController";
+ import TuitController from "./controllers/TuitController";
+ import LikeController from "./controllers/LikeController";
+ import mongoose from "mongoose";
+ var cors = require('cors')
+ 
+ // build the connection string
+ const PROTOCOL = "mongodb+srv";
+ const DB_USERNAME = process.env.DB_USERNAME;
+ const DB_PASSWORD = process.env.DB_PASSWORD;
+ const HOST = "cluster0.m8jeh.mongodb.net";
+ const DB_NAME = "myFirstDatabase";
+ const DB_QUERY = "retryWrites=true&w=majority";
+ const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}/${DB_NAME}?${DB_QUERY}`;
+ // connect to the database
+ mongoose.connect(connectionString);
+ 
+ const app = express();
+ app.use(express.json());
+ app.use(cors());
+ 
+ app.get('/', (req: Request, res: Response) =>
+     res.send('Welcome!'));
+ 
+ app.get('/add/:a/:b', (req: Request, res: Response) =>
+     res.send(req.params.a + req.params.b));
+ 
+ // create RESTful Web service API
+ const userController = UserController.getInstance(app);
+ const tuitController = TuitController.getInstance(app);
+ const likesController = LikeController.getInstance(app);
+ 
+ /**
+  * Start a server listening at port 4000 locally
+  * but use environment variable PORT on Heroku if available.
+  */
+ const PORT = 4000;
+ app.listen(process.env.PORT || PORT);
