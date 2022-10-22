@@ -39,9 +39,9 @@
      res.send(req.params.a + req.params.b));
  
  // create RESTful Web service API
- const userController = UserController.getInstance(app);
- const tuitController = TuitController.getInstance(app);
- const likesController = LikeController.getInstance(app);
+//  const userController = UserController.getInstance(app);
+//  const tuitController = TuitController.getInstance(app);
+//  const likesController = LikeController.getInstance(app);
  
  /**
   * Start a server listening at port 4000 locally
