@@ -1,14 +1,12 @@
-import express from 'express';
-import {Request, Response} from "express";
-
-const app = express();
-
-app.get('/', (req: Request, res: Response) =>
-res.send('Welcome WebDev!'));
-
-app.get('/add/:a/:b', (req: Request, res: Response) =>
-res.send(req.params.a + req.params.b));
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const app = (0, express_1.default)();
+app.get('/', (req, res) => res.send('Welcome WebDev!'));
+app.get('/add/:a/:b', (req, res) => res.send(req.params.a + req.params.b));
 const PORT = 3000;
 app.listen(process.env.PORT || PORT);
 // /**
@@ -29,7 +27,6 @@ app.listen(process.env.PORT || PORT);
 // import LikeController from "./controllers/LikeController";
 // import mongoose from "mongoose";
 // var cors = require('cors')
-
 // // build the connection string
 // const PROTOCOL = "mongodb+srv";
 // const DB_USERNAME = process.env.DB_USERNAME;
@@ -40,25 +37,21 @@ app.listen(process.env.PORT || PORT);
 // const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}/${DB_NAME}?${DB_QUERY}`;
 // // connect to the database
 // mongoose.connect(connectionString);
-
 // const app = express();
 // app.use(express.json());
 // app.use(cors());
-
 // app.get('/', (req: Request, res: Response) =>
 //     res.send('Welcome!'));
-
 // app.get('/add/:a/:b', (req: Request, res: Response) =>
 //     res.send(req.params.a + req.params.b));
-
 // // create RESTful Web service API
 // const userController = UserController.getInstance(app);
 // const tuitController = TuitController.getInstance(app);
 // const likesController = LikeController.getInstance(app);
-
 // /**
 //  * Start a server listening at port 4000 locally
 //  * but use environment variable PORT on Heroku if available.
 //  */
 // const PORT = 4000;
 // app.listen(process.env.PORT || PORT);
+//# sourceMappingURL=server.js.map
