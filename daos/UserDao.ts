@@ -33,7 +33,7 @@
       * database
       */
      findAllUsers = async (): Promise<User[]> =>
-         UserModel.find().exec();
+        UserModel.find().exec();
  
      /**
       * Uses UserModel to retrieve single user document from users collection
@@ -41,7 +41,7 @@
       * @returns Promise To be notified when user is retrieved from the database
       */
      findUserById = async (uid: string): Promise<any> =>
-         UserModel.findById(uid);
+        UserModel.findById(uid);
  
      /**
       * Inserts user instance into the database
