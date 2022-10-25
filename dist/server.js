@@ -30,8 +30,8 @@ const MessageController_1 = __importDefault(require("./controllers/MessageContro
 var cors = require('cors');
 // build the connection string
 const PROTOCOL = "mongodb+srv";
-const DB_USERNAME = process.env.DB_USERNAME;
-const DB_PASSWORD = process.env.DB_PASSWORD;
+const DB_USERNAME = "t1yena";
+const DB_PASSWORD = "tuiterwebdev";
 const HOST = "cluster0.bppa0ew.mongodb.net";
 const DB_NAME = "FSE";
 const DB_QUERY = "retryWrites=true&w=majority";
