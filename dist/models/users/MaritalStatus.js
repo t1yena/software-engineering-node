@@ -1,4 +1,8 @@
 "use strict";
+/**
+ * @file Declares MaritalStatus enum data type representing
+ * the three types of marital statuses users can have
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 var MaritalStatus;
 (function (MaritalStatus) {

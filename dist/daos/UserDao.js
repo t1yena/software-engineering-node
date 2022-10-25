@@ -18,8 +18,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 const UserModel_1 = __importDefault(require("../mongoose/users/UserModel"));
 /**
- * @class UserDao Implements Data Access Object managing data storage
- * of Users
+ * @class UserDao Implements Data Access Object
+ * managing data storage of Users
  * @property {UserDao} userDao Private single instance of UserDao
  */
 class UserDao {

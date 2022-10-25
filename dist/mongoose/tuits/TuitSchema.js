@@ -23,6 +23,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * @file Defines Tuit Schema that maps to tuits collection in MongoDB database.
+ */
 const mongoose_1 = __importStar(require("mongoose"));
 const TuitSchema = new mongoose_1.default.Schema({
     tuit: { type: String, required: true },

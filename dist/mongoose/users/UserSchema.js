@@ -1,4 +1,7 @@
 "use strict";
+/**
+ * @file Defines User Schema that maps to users collection in MongoDB database.
+ */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -20,7 +23,7 @@ const UserSchema = new mongoose_1.default.Schema({
         latitude: Number,
         longitude: Number
     },
-    salary: { type: Number, default: 50000 }
+    salary: { type: Number }
 }, { collection: "users" });
 exports.default = UserSchema;
 //# sourceMappingURL=UserSchema.js.map

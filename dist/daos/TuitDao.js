@@ -13,37 +13,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
- * @file Implements DAO managing data storage of tuits. Uses mongoose TuitModel
- * to integrate with MongoDB
+ * @file Implements DAO managing data storage of tuits.
+ * Uses mongoose TuitModel to integrate with MongoDB
  */
 const TuitModel_1 = __importDefault(require("../mongoose/tuits/TuitModel"));
 /**
- * @class UserDao Implements Data Access Object managing data storage
- * of Users
- * @property {UserDao} userDao Private single instance of UserDao
+ * @class UserDao Implements Data Access Object
+ * managing data storage of Tuits
+ * @property {TuitDao} tuitDao Private single instance of TuitDao
  */
 class TuitDao {
     constructor() {
-        this.findAllTuits = () => __awaiter(this, void 0, void 0, function* () {
-            return TuitModel_1.default.find()
-                .populate("postedBy")
-                .exec();
-        });
+        this.findAllTuits = () => __awaiter(this, void 0, void 0, function* () { return TuitModel_1.default.find().exec(); });
         this.findAllTuitsByUser = (uid) => __awaiter(this, void 0, void 0, function* () {
             return TuitModel_1.default.find({ postedBy: uid })
                 .populate("postedBy")
                 .exec();
         });
-        this.findTuitById = (uid) => __awaiter(this, void 0, void 0, function* () {
-            return TuitModel_1.default.findById(uid)
+        this.findTuitById = (tid) => __awaiter(this, void 0, void 0, function* () {
+            return TuitModel_1.default.findById(tid)
                 .populate("postedBy")
                 .exec();
         });
         this.createTuitByUser = (uid, tuit) => __awaiter(this, void 0, void 0, function* () { return TuitModel_1.default.create(Object.assign(Object.assign({}, tuit), { postedBy: uid })); });
-        this.updateTuit = (uid, tuit) => __awaiter(this, void 0, void 0, function* () {
-            return TuitModel_1.default.updateOne({ _id: uid }, { $set: tuit });
+        this.updateTuit = (tid, tuit) => __awaiter(this, void 0, void 0, function* () {
+            return TuitModel_1.default.updateOne({ _id: tid }, { $set: tuit });
         });
-        this.deleteTuit = (uid) => __awaiter(this, void 0, void 0, function* () { return TuitModel_1.default.deleteOne({ _id: uid }); });
+        this.deleteTuit = (tid) => __awaiter(this, void 0, void 0, function* () { return TuitModel_1.default.deleteOne({ _id: tid }); });
     }
 }
 exports.default = TuitDao;

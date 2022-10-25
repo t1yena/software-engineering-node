@@ -1,4 +1,8 @@
 "use strict";
+/**
+ * @file Declares AccountType enum data type representing
+ * the three types of account types users can have
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 var AccountType;
 (function (AccountType) {

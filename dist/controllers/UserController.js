@@ -77,16 +77,15 @@ class UserController {
          */
         this.deleteAllUsers = (req, res) => UserController.userDao.deleteAllUsers()
             .then((status) => res.send(status));
+        /**
+         * Removes a user instance from the database based on their username
+         * @param {Request} req Represents request from client, including path
+         * parameter username identifying the username of the user to be removed
+         * @param {Response} res Represents response to client, including status
+         * on whether deleting a user was successful or not
+         */
         this.deleteUsersByUsername = (req, res) => UserController.userDao.deleteUsersByUsername(req.params.username)
             .then(status => res.send(status));
-        this.login = (req, res) => UserController.userDao
-            .findUserByCredentials(req.body.username, req.body.password)
-            .then(user => {
-            res.json(user);
-        });
-        this.register = (req, res) => UserController.userDao.findUserByUsername(req.body.username)
-            .then(user => {
-        });
     }
 }
 exports.default = UserController;
@@ -108,12 +107,6 @@ UserController.getInstance = (app) => {
         app.put("/api/users/:uid", UserController.userController.updateUser);
         app.delete("/api/users/:uid", UserController.userController.deleteUser);
         app.delete("/api/users", UserController.userController.deleteAllUsers);
-        app.post("/api/login", UserController.userController.login);
-        // for testing. Not RESTful
-        app.get("/api/users/create", UserController.userController.createUser);
-        app.get("/api/users/id/:uid/delete", UserController.userController.deleteUser);
-        app.get("/api/users/username/:username/delete", UserController.userController.deleteUsersByUsername);
-        app.get("/api/users/delete", UserController.userController.deleteAllUsers);
     }
     return UserController.userController;
 };

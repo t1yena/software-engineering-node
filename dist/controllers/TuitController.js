@@ -43,14 +43,16 @@ class TuitController {
         this.findAllTuitsByUser = (req, res) => TuitController.tuitDao.findAllTuitsByUser(req.params.uid)
             .then((tuits) => res.json(tuits));
         /**
+         * Retrieves a tuit by their primary key
          * @param {Request} req Represents request from client, including path
          * parameter tid identifying the primary key of the tuit to be retrieved
          * @param {Response} res Represents response to client, including the
          * body formatted as JSON containing the tuit that matches the user ID
          */
-        this.findTuitById = (req, res) => TuitController.tuitDao.findTuitById(req.params.uid)
+        this.findTuitById = (req, res) => TuitController.tuitDao.findTuitById(req.params.tid)
             .then((tuit) => res.json(tuit));
         /**
+         * Creates a new tuit instance
          * @param {Request} req Represents request from client, including body
          * containing the JSON object for the new tuit to be inserted in the
          * database
@@ -61,20 +63,22 @@ class TuitController {
         this.createTuitByUser = (req, res) => TuitController.tuitDao.createTuitByUser(req.params.uid, req.body)
             .then((tuit) => res.json(tuit));
         /**
+         * Modifies an existing tuit instance
          * @param {Request} req Represents request from client, including path
          * parameter tid identifying the primary key of the tuit to be modified
          * @param {Response} res Represents response to client, including status
          * on whether updating a tuit was successful or not
          */
-        this.updateTuit = (req, res) => TuitController.tuitDao.updateTuit(req.params.uid, req.body)
+        this.updateTuit = (req, res) => TuitController.tuitDao.updateTuit(req.params.tid, req.body)
             .then((status) => res.send(status));
         /**
+         * Removes a tuit instance form database.
          * @param {Request} req Represents request from client, including path
          * parameter tid identifying the primary key of the tuit to be removed
          * @param {Response} res Represents response to client, including status
          * on whether deleting a user was successful or not
          */
-        this.deleteTuit = (req, res) => TuitController.tuitDao.deleteTuit(req.params.uid)
+        this.deleteTuit = (req, res) => TuitController.tuitDao.deleteTuit(req.params.tid)
             .then((status) => res.send(status));
     }
 }
@@ -92,10 +96,10 @@ TuitController.getInstance = (app) => {
         TuitController.tuitController = new TuitController();
         app.get("/api/tuits", TuitController.tuitController.findAllTuits);
         app.get("/api/users/:uid/tuits", TuitController.tuitController.findAllTuitsByUser);
-        app.get("/api/tuits/:uid", TuitController.tuitController.findTuitById);
+        app.get("/api/tuits/:tid", TuitController.tuitController.findTuitById);
         app.post("/api/users/:uid/tuits", TuitController.tuitController.createTuitByUser);
-        app.put("/api/tuits/:uid", TuitController.tuitController.updateTuit);
-        app.delete("/api/tuits/:uid", TuitController.tuitController.deleteTuit);
+        app.put("/api/tuits/:tid", TuitController.tuitController.updateTuit);
+        app.delete("/api/tuits/:tid", TuitController.tuitController.deleteTuit);
     }
     return TuitController.tuitController;
 };
