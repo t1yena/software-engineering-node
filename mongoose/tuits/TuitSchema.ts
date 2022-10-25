@@ -1,3 +1,6 @@
+/**
+ * @file Defines Tuit Schema that maps to tuits collection in MongoDB database.
+ */
 import mongoose, {Schema} from "mongoose";
 import Tuit from "../../models/tuits/Tuit";
 const TuitSchema = new mongoose.Schema<Tuit>({

@@ -1,3 +1,6 @@
+/**
+ * @file Interface for like controller
+ */
 import {Request, Response} from "express";
 
 export default interface LikeControllerI {

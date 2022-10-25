@@ -1,3 +1,6 @@
+/**
+ * @file Interface for user controller
+ */
 import {Request, Response} from "express";
 
 export default interface UserControllerI {

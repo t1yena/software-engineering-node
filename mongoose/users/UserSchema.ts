@@ -1,3 +1,7 @@
+/**
+ * @file Defines User Schema that maps to users collection in MongoDB database.
+ */
+
 import mongoose from "mongoose";
 import User from "../../models/users/User";
 const UserSchema = new mongoose.Schema<User>({
@@ -16,7 +20,7 @@ const UserSchema = new mongoose.Schema<User>({
         latitude: Number,
         longitude: Number
     },
-    salary: {type: Number, default: 50000}
+    salary: {type: Number}
 }, {collection: "users"});
 
 export default UserSchema;
