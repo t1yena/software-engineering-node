@@ -107,6 +107,7 @@ UserController.getInstance = (app) => {
         app.put("/api/users/:uid", UserController.userController.updateUser);
         app.delete("/api/users/:uid", UserController.userController.deleteUser);
         app.delete("/api/users", UserController.userController.deleteAllUsers);
+        app.delete("/api/users/username/:uid/delete", UserController.userController.deleteUsersByUsername);
     }
     return UserController.userController;
 };
