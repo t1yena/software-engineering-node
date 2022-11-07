@@ -84,7 +84,7 @@
          UserModel.deleteMany({});
  
      deleteUsersByUsername = async (username: string): Promise<any> =>
-        UserModel.deleteMany({username});
+        UserModel.deleteMany({username: username});
      
      findUserByCredentials = async (username: string, password: string): Promise<any> =>
          UserModel.findOne({username: username, password: password});
