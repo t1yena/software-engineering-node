@@ -30,7 +30,7 @@
          TuitModel.findById(tid)
              .populate("postedBy")
              .exec();
-     createTuitByUser = async (uid: string, tuit: Tuit): Promise<Tuit> =>
+     createTuit = async (uid: string, tuit: Tuit): Promise<Tuit> =>
          TuitModel.create({...tuit, postedBy: uid});
      updateTuit = async (tid: string, tuit: Tuit): Promise<any> =>
          TuitModel.updateOne(
