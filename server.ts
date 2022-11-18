@@ -43,20 +43,6 @@ let sess = {
     saveUninitialized: true
 }
 
-
-// build the connection string
-const PROTOCOL = "mongodb+srv";
-const DB_USERNAME = process.env.DB_USERNAME;
-const DB_PASSWORD = process.env.DB_PASSWORD;
-// const DB_USERNAME = "t1yena";
-// const DB_PASSWORD = "yenawebdev";
-const HOST = "cluster0.bppa0ew.mongodb.net";
-const DB_NAME = "FSE";
-const DB_QUERY = "retryWrites=true&w=majority";
-const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}/${DB_NAME}?${DB_QUERY}`;
-// connect to the database
-mongoose.connect(connectionString);
-
 app.use(session(sess));
 
 if (process.env.ENV === 'PRODUCTION') {
@@ -72,6 +58,21 @@ app.get('/', (req: Request, res: Response) =>
 
 app.get('/add/:a/:b', (req: Request, res: Response) =>
     res.send(req.params.a + req.params.b));
+
+
+// build the connection string
+const PROTOCOL = "mongodb+srv";
+const DB_USERNAME = process.env.DB_USERNAME;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+// const DB_USERNAME = "t1yena";
+// const DB_PASSWORD = "yenawebdev";
+const HOST = "cluster0.bppa0ew.mongodb.net";
+const DB_NAME = "FSE";
+const DB_QUERY = "retryWrites=true&w=majority";
+const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}/${DB_NAME}?${DB_QUERY}`;
+// connect to the database
+mongoose.connect(connectionString);
+
 
 // create RESTful Web service API
 const userController = UserController.getInstance(app);
