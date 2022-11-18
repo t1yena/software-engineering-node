@@ -31,9 +31,13 @@ const corsConfig = {
     credentials: true,
     optionSuccessStatus: 200
 }
-const session = require("express-session");
 
 const app = express();
+app.use(cors(corsConfig));
+app.use(express.json());
+
+const session = require("express-session");
+
 
 let sess = {
     secret: `${process.env.SECRET}`,
@@ -44,16 +48,14 @@ let sess = {
     saveUninitialized: true
 }
 
-app.use(session(sess));
 
 if (process.env.ENV === 'PRODUCTION') {
     app.set('trust proxy', 1) // trust first proxy
     sess.cookie.secure = true // serve secure cookies
 }
 
-app.use(cors(corsConfig));
+app.use(session(sess));
 
-app.use(express.json());
 
 app.get('/', (req: Request, res: Response) =>
     res.send('Welcome!'));
