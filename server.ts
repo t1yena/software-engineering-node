@@ -25,45 +25,32 @@ import BookmarkController from './controllers/BookmarkController';
 import MessageController from './controllers/MessageController';
 import AuthenticationController from './controllers/auth-controller';
 
-const cors = require('cors')
-const corsConfig = {
-    // origin: true,
+var cors = require('cors');
+const session = require('express-session');
+const app = express();  
+
+let sess = {
+    secret: `${process.env.SECRET}`,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: false
+    }
+}
+app.use(session(sess));
+
+if (process.env.ENV === 'PRODUCTION') {
+    app.set('trust proxy', 1) 
+    sess.cookie.secure = true  
+
+const corsOptions = {
     origin: 'http://localhost:3000',
     credentials: true,
     optionSuccessStatus: 200
 }
 
-const app = express();
-app.use(cors(corsConfig));
-app.use(express.json());
-
-const session = require("express-session");
-
-
-let sess = {
-    secret: `${process.env.SECRET}`,
-    cookie: {
-        secure: false
-    },
-    resave: false,
-    saveUninitialized: true
-}
-
-
-if (process.env.ENV === 'PRODUCTION') {
-    app.set('trust proxy', 1) // trust first proxy
-    sess.cookie.secure = true // serve secure cookies
-}
-
-app.use(session(sess));
-
-
-app.get('/', (req: Request, res: Response) =>
-    res.send('Welcome!'));
-
-app.get('/add/:a/:b', (req: Request, res: Response) =>
-    res.send(req.params.a + req.params.b));
-
+app.use(cors(corsOptions));       
+app.use(express.json());  
 
 // build the connection string
 const PROTOCOL = "mongodb+srv";
