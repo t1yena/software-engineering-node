@@ -25,7 +25,7 @@ import BookmarkController from './controllers/BookmarkController';
 import MessageController from './controllers/MessageController';
 import AuthenticationController from './controllers/auth-controller';
 
-var cors = require('cors')
+const cors = require('cors')
 const corsConfig = {
     // origin: true,
     origin: 'http://localhost:3000',
@@ -34,7 +34,7 @@ const corsConfig = {
 }
 
 const app = express();
-app.use(cors((corsConfig)));
+app.use(cors(corsConfig));
 app.use(express.json());
 
 const session = require("express-session");
