@@ -35,20 +35,13 @@ export default class UserController implements UserControllerI {
             UserController.userController = new UserController();
 
             // RESTful User Web service API
-            app.get("/api/users",
-                UserController.userController.findAllUsers);
-            app.get("/api/users/:uid",
-                UserController.userController.findUserById);
-            app.post("/api/users",
-                UserController.userController.createUser);
-            app.put("/api/users/:uid",
-                UserController.userController.updateUser);
-            app.delete("/api/users/:uid",
-                UserController.userController.deleteUser);
-            app.delete("/api/users",
-                UserController.userController.deleteAllUsers);
-            app.delete("/api/users/username/:username/delete",
-                UserController.userController.deleteUsersByUsername);
+            app.get("/api/users", UserController.userController.findAllUsers);
+            app.get("/api/users/:uid", UserController.userController.findUserById);
+            app.post("/api/users", UserController.userController.createUser);
+            app.put("/api/users/:uid", UserController.userController.updateUser);
+            app.delete("/api/users/:uid", UserController.userController.deleteUser);
+            app.delete("/api/users", UserController.userController.deleteAllUsers);
+            app.delete("/api/users/username/:username/delete", UserController.userController.deleteUsersByUsername);
         }
         return UserController.userController;
     }

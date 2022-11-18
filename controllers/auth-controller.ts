@@ -31,10 +31,10 @@ export default class AuthenticationController {
             res.sendStatus(403);
             return;
         } else {
-        const insertedUser = await AuthenticationController.userDao.createUser(newUser);
-        insertedUser.password = '';
-        req.session['profile'] = insertedUser;
-        res.json(insertedUser);
+            const insertedUser = await AuthenticationController.userDao.createUser(newUser);
+            insertedUser.setPassword('');
+            req.session['profile'] = insertedUser;
+            res.json(insertedUser);
         }
     }
 
