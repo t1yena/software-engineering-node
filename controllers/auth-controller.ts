@@ -20,7 +20,7 @@ export default class AuthenticationController {
     }
     private constructor() {}
 
-    signup = async (req:any, res:any) => {
+    signup = async (req, res) => {
         const newUser = req.body;
         const password = newUser.password;
         const hash = await bcrypt.hash(password, saltRounds);

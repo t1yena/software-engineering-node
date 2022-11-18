@@ -18,22 +18,23 @@ import express from 'express';
 import {Request, Response} from "express";
 import UserController from "./controllers/UserController";
 import TuitController from "./controllers/TuitController";
-import mongoose from "mongoose";
+import * as mongoose from "mongoose";
 import FollowController from './controllers/FollowController';
 import LikeController from './controllers/LikeController';
 import BookmarkController from './controllers/BookmarkController';
 import MessageController from './controllers/MessageController';
 import AuthenticationController from './controllers/auth-controller';
 
-const cors = require('cors')
+var cors = require('cors')
 const corsConfig = {
     origin: 'http://localhost:3000',
     credentials: true,
     optionSuccessStatus: 200
 }
+const session = require("express-session");
+
 const app = express();
 
-const session = require("express-session");
 let sess = {
     secret: `${process.env.SECRET}`,
     cookie: {
@@ -49,9 +50,10 @@ if (process.env.ENV === 'PRODUCTION') {
     app.set('trust proxy', 1) // trust first proxy
     sess.cookie.secure = true // serve secure cookies
 }
- 
-app.use(express.json());
+
 app.use(cors(corsConfig));
+
+app.use(express.json());
 
 app.get('/', (req: Request, res: Response) =>
     res.send('Welcome!'));
