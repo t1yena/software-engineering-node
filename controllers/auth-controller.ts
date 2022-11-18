@@ -4,51 +4,60 @@ const saltRounds = 10;
 import {Express} from "express";
 
 
-const AuthenticationController = (app: Express) => {
-  
-    const userDao: UserDao = UserDao.getInstance();
+export default class AuthenticationController {
+    private static userDao: UserDao = UserDao.getInstance();
+    private static authenticationController: AuthenticationController | null = null;
 
-    const signup = async (req:any, res:any) => {
+    public static getInstance = (app: Express): AuthenticationController => {
+        if(AuthenticationController.authenticationController === null) {
+            AuthenticationController.authenticationController = new AuthenticationController();
+            app.post("/api/auth/login", AuthenticationController.authenticationController.login);
+            app.post("/api/auth/profile", AuthenticationController.authenticationController.profile);
+            app.post("/api/auth/logout", AuthenticationController.authenticationController.logout);
+            app.post("/api/auth/signup", AuthenticationController.authenticationController.signup);
+        }
+        return AuthenticationController.authenticationController;
+    }
+    private constructor() {}
+
+    signup = async (req:any, res:any) => {
         const newUser = req.body;
         const password = newUser.password;
         const hash = await bcrypt.hash(password, saltRounds);
         newUser.password = hash;
 
-        const existingUser = await userDao
-            .findUserByUsername(req.body.username);
+        const existingUser = await AuthenticationController.userDao.findUserByUsername(req.body.username);
         if (existingUser) {
-        res.sendStatus(403);
-        return;
+            res.sendStatus(403);
+            return;
         } else {
-        const insertedUser = await userDao
-            .createUser(newUser);
+        const insertedUser = await AuthenticationController.userDao.createUser(newUser);
         insertedUser.password = '';
         req.session['profile'] = insertedUser;
         res.json(insertedUser);
         }
     }
 
-    const profile = (req, res) => {
+    profile = (req, res) => {
         const profile = req.session['profile'];
         if (profile) {
-        profile.password = "";
-        res.json(profile);
+            profile.password = "";
+            res.json(profile);
         } else {
-        res.sendStatus(403);
+            res.sendStatus(403);
         }
     }
     
-    const logout = (req, res) => {
+    logout = (req, res) => {
         req.session.destroy();
         res.sendStatus(200);
     }
 
-    const login = async (req, res) => {
+    login = async (req, res) => {
         const user = req.body;
         const username = user.username;
         const password = user.password;
-        const existingUser = await userDao
-          .findUserByUsername(username);
+        const existingUser = await AuthenticationController.userDao.findUserByUsername(username);
       
         if (!existingUser) {
           res.sendStatus(403);
@@ -66,13 +75,6 @@ const AuthenticationController = (app: Express) => {
           res.sendStatus(403);
         }
       };
-      
-    app.post("/api/auth/login", login);
 
-
-    app.post("/api/auth/profile", profile);
-    app.post("/api/auth/logout", logout);
-
-    app.post("/api/auth/signup", signup);
+    
 }
-export default AuthenticationController;

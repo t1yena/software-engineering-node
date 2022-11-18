@@ -23,6 +23,7 @@ import FollowController from './controllers/FollowController';
 import LikeController from './controllers/LikeController';
 import BookmarkController from './controllers/BookmarkController';
 import MessageController from './controllers/MessageController';
+import AuthenticationController from './controllers/auth-controller';
 
 const cors = require('cors')
 const corsConfig = {
@@ -47,7 +48,7 @@ const session = require("express-session");
 
 const app = express();
 let sess = {
-    secret: process.env.SECRET,
+    secret: `${process.env.SECRET}`,
     cookie: {
         secure: false
     },
@@ -77,6 +78,7 @@ const likeController = LikeController.getInstance(app);
 const followController = FollowController.getInstance(app);
 const bookmarkController = BookmarkController.getInstance(app);
 const messageController = MessageController.getInstance(app);
+const authenticationController = AuthenticationController.getInstance(app);
 
 //Start a server listening at port 4000 locally
 const PORT = 4000;
