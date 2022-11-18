@@ -34,7 +34,7 @@ const corsConfig = {
 }
 
 const app = express();
-app.use(cors());
+app.use(cors((corsConfig)));
 app.use(express.json());
 
 const session = require("express-session");
