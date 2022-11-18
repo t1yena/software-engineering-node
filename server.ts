@@ -31,6 +31,18 @@ const corsConfig = {
     credentials: true,
     optionSuccessStatus: 200
 }
+const app = express();
+
+const session = require("express-session");
+let sess = {
+    secret: `${process.env.SECRET}`,
+    cookie: {
+        secure: false
+    },
+    resave: false,
+    saveUninitialized: true
+}
+
 
 // build the connection string
 const PROTOCOL = "mongodb+srv";
@@ -44,24 +56,14 @@ const DB_QUERY = "retryWrites=true&w=majority";
 const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}/${DB_NAME}?${DB_QUERY}`;
 // connect to the database
 mongoose.connect(connectionString);
-const session = require("express-session");
 
-const app = express();
-let sess = {
-    secret: `${process.env.SECRET}`,
-    cookie: {
-        secure: false
-    },
-    resave: false,
-    saveUninitialized: true
-}
- 
- if (process.env.ENV === 'PRODUCTION') {
+app.use(session(sess));
+
+if (process.env.ENV === 'PRODUCTION') {
     app.set('trust proxy', 1) // trust first proxy
     sess.cookie.secure = true // serve secure cookies
 }
  
-app.use(session(sess));
 app.use(express.json());
 app.use(cors(corsConfig));
 
@@ -82,5 +84,5 @@ const authenticationController = AuthenticationController.getInstance(app);
 
 //Start a server listening at port 4000 locally
 const PORT = 4000;
-app.listen(PORT);
-// app.listen(process.env.PORT || PORT);
+// app.listen(PORT);
+app.listen(process.env.PORT || PORT);
