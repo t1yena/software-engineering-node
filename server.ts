@@ -24,7 +24,12 @@ import LikeController from './controllers/LikeController';
 import BookmarkController from './controllers/BookmarkController';
 import MessageController from './controllers/MessageController';
 
- var cors = require('cors')
+const cors = require('cors')
+const corsConfig = {
+    origin: 'http://localhost:3000',
+    credentials: true,
+    optionSuccessStatus: 200
+}
 
 // build the connection string
 const PROTOCOL = "mongodb+srv";
@@ -45,7 +50,9 @@ let sess = {
     secret: process.env.SECRET,
     cookie: {
         secure: false
-    }
+    },
+    resave: false,
+    saveUninitialized: true
 }
  
  if (process.env.ENV === 'PRODUCTION') {
@@ -53,9 +60,9 @@ let sess = {
     sess.cookie.secure = true // serve secure cookies
 }
  
-
+app.use(session(sess));
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsConfig));
 
 app.get('/', (req: Request, res: Response) =>
     res.send('Welcome!'));
@@ -73,4 +80,5 @@ const messageController = MessageController.getInstance(app);
 
 //Start a server listening at port 4000 locally
 const PORT = 4000;
-app.listen(process.env.PORT || PORT);
+app.listen(PORT);
+// app.listen(process.env.PORT || PORT);
