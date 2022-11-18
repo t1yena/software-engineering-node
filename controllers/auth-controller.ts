@@ -64,8 +64,7 @@ export default class AuthenticationController {
           return;
         }
       
-        const match = await bcrypt
-          .compare(password, existingUser.password);
+        const match = await bcrypt.compare(password, existingUser.password);
       
         if (match) {
           existingUser.password = '*****';
