@@ -44,10 +44,21 @@ if (process.env.ENV === 'PRODUCTION') {
     sess.cookie.secure = true   
 }
 
+// const corsOptions = {
+//     origin: 'http://localhost:3000',
+//     credentials: true,
+//     optionSuccessStatus: 200
+// }
+
+const whitelist = ['http://localhost:3000'];
 const corsOptions = {
-    origin: 'http://localhost:3000',
-    credentials: true,
-    optionSuccessStatus: 200
+  credentials: true, // This is important.
+  origin: (origin, callback) => {
+    if(whitelist.includes(origin))
+      return callback(null, true)
+
+      callback(new Error('Not allowed by CORS'));
+  }
 }
 
 app.use(cors(corsOptions));        
