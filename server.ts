@@ -27,15 +27,13 @@ import AuthenticationController from './controllers/auth-controller';
 
 const app = express();
 import cors from 'cors';
-const corsOption= {
-    // origin: true,
+const corsConfig = {
     origin: true,
-    credentials: true,
-    optionSuccessStatus: 200
-}
+    // credentials: true,
+};
 
 
-app.use(cors(corsOption));
+app.use(cors(corsConfig));
 app.use(express.json());
 
 const session = require("express-session");
