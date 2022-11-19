@@ -23,7 +23,7 @@ import FollowController from './controllers/FollowController';
 import LikeController from './controllers/LikeController';
 import BookmarkController from './controllers/BookmarkController';
 import MessageController from './controllers/MessageController';
-import AuthenticationController from './controllers/auth-controller';
+import AuthenticationController from './controllers/AuthController';
 
 var cors = require('cors');
 const session = require('express-session');
