@@ -55,6 +55,7 @@ app.use(express.json());
 
 
 app.get('/', (req: Request, res: Response) =>
+    res.set('Access-Control-Allow-Origin', 'http://localhost:3000')
     res.send('Welcome!'));
 
 app.get('/add/:a/:b', (req: Request, res: Response) =>
