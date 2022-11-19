@@ -25,37 +25,33 @@ import BookmarkController from './controllers/BookmarkController';
 import MessageController from './controllers/MessageController';
 import AuthenticationController from './controllers/auth-controller';
 
-const cors = require('cors');
-const corsConfig = {
-    origin: "http://localhost:3000",
-    credentials: true,
-};
-const app = express();
-
-
-app.use(cors(corsConfig));
-app.use(express.json());
-
-const session = require("express-session");
-
+var cors = require('cors');
+const session = require('express-session');
+const app = express(); 
 
 let sess = {
-    secret: process.env.SECRET,
+    secret: `${process.env.SECRET}`,
+    resave: false,
+    saveUninitialized: true,
     cookie: {
-        sameSite: "none",
         secure: false
     },
-    resave: false,
-    saveUninitialized: true
 }
-
+app.use(session(sess));
 
 if (process.env.ENV === 'PRODUCTION') {
-    app.set('trust proxy', 1) // trust first proxy
-    sess.cookie.secure = true // serve secure cookies
+    app.set('trust proxy', 1)  
+    sess.cookie.secure = true   
 }
 
-app.use(session(sess));
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true,
+    optionSuccessStatus: 200
+}
+
+app.use(cors(corsOptions));        
+app.use(express.json());
 
 
 app.get('/', (req: Request, res: Response) =>
