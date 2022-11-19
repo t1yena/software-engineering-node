@@ -26,8 +26,8 @@ import MessageController from './controllers/MessageController';
 import AuthenticationController from './controllers/auth-controller';
 
 const app = express();
-import cors from 'cors';
-const corsConfig: cors.CorsOptions = {
+const cors = require('cors');
+const corsConfig = {
     origin: "http://localhost:3000",
     credentials: true,
 };
@@ -40,7 +40,7 @@ const session = require("express-session");
 
 
 let sess = {
-    secret: `${process.env.SECRET}`,
+    secret: process.env.SECRET,
     cookie: {
         sameSite: "none",
         secure: false
