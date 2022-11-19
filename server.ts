@@ -26,10 +26,10 @@ import MessageController from './controllers/MessageController';
 import AuthenticationController from './controllers/auth-controller';
 
 const app = express();
-const cors = require('cors')
+import cors from 'cors';
 const corsConfig = {
     // origin: true,
-    origin: 'http://localhost:3000',
+    origin: "http://localhost:3000",
     credentials: true,
     optionSuccessStatus: 200
 }
