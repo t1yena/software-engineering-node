@@ -29,7 +29,7 @@ const app = express();
 import cors from 'cors';
 const corsOption= {
     // origin: true,
-    origin: "http://localhost:3000",
+    origin: true,
     credentials: true,
     optionSuccessStatus: 200
 }
