@@ -1,9 +1,10 @@
 import UserDao from "../daos/UserDao";
 import {Express} from "express";
+
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-export default class AuthenticationController {
+export default class AuthenticationController{
     private static userDao: UserDao = UserDao.getInstance();
     private static authenticationController: AuthenticationController | null = null;
 
@@ -78,6 +79,7 @@ export default class AuthenticationController {
         } else {
             // Password doesn't match: forbidden error 403
             res.sendStatus(403);
+            console.log("Wrong password");
         }
     };
 }
