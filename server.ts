@@ -27,9 +27,9 @@ import AuthenticationController from './controllers/auth-controller';
 
 const app = express();
 import cors from 'cors';
-const corsConfig = {
-    origin: true,
-    // credentials: true,
+const corsConfig: cors.CorsOptions = {
+    origin: "http://localhost:3000",
+    credentials: true,
 };
 
 
