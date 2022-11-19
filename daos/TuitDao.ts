@@ -20,8 +20,10 @@
          return TuitDao.tuitDao;
      }
      private constructor() {}
-     findAllTuits = async (): Promise<Tuit[]> =>
-         TuitModel.find().exec();
+    public async findAllTuits(): Promise<Tuit[]> {
+        return await TuitModel.find().populate('postedBy', 'username').exec();
+    }
+
      findAllTuitsByUser = async (uid: string): Promise<Tuit[]> =>
          TuitModel.find({postedBy: uid})
              .populate("postedBy")
@@ -30,9 +32,11 @@
          TuitModel.findById(tid)
              .populate("postedBy")
              .exec();
+
      public async createTuit(uid: string, tuit: Tuit): Promise<Tuit> {
          return await TuitModel.create({...tuit, postedBy: uid});
      }
+     
      updateTuit = async (tid: string, tuit: Tuit): Promise<any> =>
          TuitModel.updateOne(
              {_id: tid},
