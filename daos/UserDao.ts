@@ -42,7 +42,8 @@
                     userMongooseModels?.password ?? '',
                     userMongooseModels?.firstName ?? '',
                     userMongooseModels?.lastName ?? '',
-                    userMongooseModels.email ?? ''
+                    userMongooseModels.email ?? '',
+                    userMongooseModels.profilePhoto ?? ''
                 );
             });
         return userModels;
