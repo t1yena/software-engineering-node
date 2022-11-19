@@ -43,7 +43,6 @@
                     userMongooseModels?.firstName ?? '',
                     userMongooseModels?.lastName ?? '',
                     userMongooseModels.email ?? '',
-                    userMongooseModels.profilePhoto ?? ''
                 );
             });
         return userModels;
@@ -62,7 +61,7 @@
             userMongooseModel?.password ?? '',
             userMongooseModel?.firstName ?? '',
             userMongooseModel?.lastName ?? '',
-            userMongooseModel?.email ?? '',
+            userMongooseModel?.email ?? ''
         );
      }
  
@@ -79,8 +78,7 @@
             userMongooseModel.password ?? '',
             userMongooseModel.firstName ?? '',
             userMongooseModel.lastName ?? '',
-            userMongooseModel.email ?? '',
-            userMongooseModel.profilePhoto ?? ''
+            userMongooseModel.email ?? ''
         );
      }
  
