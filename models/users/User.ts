@@ -32,14 +32,14 @@ export default class User {
     private salary: number;
     private joined: Date = new Date();
 
-    constructor(id:string, username: string, password: string, firstName: string | null, lastName: string | null, email: string) {
+    constructor(id:string, username: string, password: string, firstName: string | null, lastName: string | null, email: string, profilePhoto:'emptyAvatar.png') {
       this._id = id;
       this.username = username;
       this.password = password;
       this.firstName = firstName;
       this.lastName = lastName;
       this.email = email;
-      // this.profilePhoto = profilePhoto;
+      this.profilePhoto = profilePhoto;
     }
 
     public setPassword(password:string) {
