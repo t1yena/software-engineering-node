@@ -25,12 +25,12 @@ import BookmarkController from './controllers/BookmarkController';
 import MessageController from './controllers/MessageController';
 import AuthenticationController from './controllers/auth-controller';
 
-const app = express();
 const cors = require('cors');
 const corsConfig = {
     origin: "http://localhost:3000",
     credentials: true,
 };
+const app = express();
 
 
 app.use(cors(corsConfig));
