@@ -78,7 +78,8 @@
             userMongooseModel.password ?? '',
             userMongooseModel.firstName ?? '',
             userMongooseModel.lastName ?? '',
-            userMongooseModel.email ?? ''
+            userMongooseModel.email ?? '',
+            userMongooseModel.profilePhoto ?? ''
         );
      }
  
