@@ -22,7 +22,7 @@ export default class User {
     private email: string = '';
     private firstName: string | null;
     private lastName: string | null;
-    private profilePhoto: string | null;
+    private profilePhoto: string;
     private headerImage: string | null = null;
     private biography: string | null = null;
     private dateOfBirth: Date | null = null;
@@ -32,7 +32,7 @@ export default class User {
     private salary: number;
     private joined: Date = new Date();
 
-    constructor(id:string, username: string, password: string, firstName: string | null, lastName: string | null, email: string, profilePhoto='emptyAvatar.png') {
+    constructor(id:string, username: string, password: string, firstName: string | null, lastName: string | null, email: string, profilePhoto: string = 'emptyAvatar.png') {
       this._id = id;
       this.username = username;
       this.password = password;
