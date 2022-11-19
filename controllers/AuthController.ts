@@ -30,6 +30,7 @@ export default class AuthenticationController{
 
         const existingUser = await AuthenticationController.userDao.findUserByUsername(req.body.username);
         if (existingUser) {
+            alert("user already exists");
             res.sendStatus(403);
             return;
         } else {

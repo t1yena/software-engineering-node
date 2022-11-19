@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     email: {type: String, required: true, default: `testemail${Date.now()}`},
-    profilePhoto: String,
+    profilePhoto: {type: String, default: 'emptyAvatar.png'},
     headerImage: String,
     biography: String,
     dateOfBirth: Date,
