@@ -16,7 +16,7 @@ import mongoose from "mongoose";
   * @property {string} lastName last name of user
   */
 export default class User {
-    private id: string;
+    private _id: string;
     private username: string = '';
     private password: string = '';
     private email: string = '';
@@ -33,7 +33,7 @@ export default class User {
     private joined: Date = new Date();
 
     constructor(id:string, username: string, password: string, firstName: string | null, lastName: string | null, email: string) {
-      this.id = id;
+      this._id = id;
       this.username = username;
       this.password = password;
       this.firstName = firstName;

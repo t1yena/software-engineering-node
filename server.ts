@@ -54,13 +54,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 
-app.get('/', (req: Request, res: Response) =>
-    res.send('Welcome!'));
-
-app.get('/add/:a/:b', (req: Request, res: Response) =>
-    res.send(req.params.a + req.params.b));
-
-
 // build the connection string
 const PROTOCOL = "mongodb+srv";
 const DB_USERNAME = process.env.DB_USERNAME;
@@ -74,6 +67,11 @@ const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}/${
 // connect to the database
 mongoose.connect(connectionString);
 
+app.get('/', (req: Request, res: Response) =>
+    res.send('Welcome!'));
+
+app.get('/add/:a/:b', (req: Request, res: Response) =>
+    res.send(req.params.a + req.params.b));
 
 // create RESTful Web service API
 const userController = UserController.getInstance(app);
