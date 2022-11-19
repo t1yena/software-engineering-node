@@ -44,6 +44,7 @@ const session = require("express-session");
 let sess = {
     secret: `${process.env.SECRET}`,
     cookie: {
+        sameSite: "none",
         secure: false
     },
     resave: false,
