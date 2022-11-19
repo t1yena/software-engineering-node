@@ -1,5 +1,4 @@
 /**
-/**
  * @file Implements an Express Node HTTP server. Declares RESTful Web services
  * enabling CRUD operations on the following resources:
  * <ul>
@@ -7,63 +6,35 @@
  *     <li>tuits</li>
  *     <li>likes</li>
  *     <li>follows</li>
- *     <li>messages</li>
  *     <li>bookmarks</li>
+ *     <li>messages</li>
  * </ul>
- * 
+ *
  * Connects to a remote MongoDB instance hosted on the Atlas cloud database
  * service
  */
 import express from 'express';
 import {Request, Response} from "express";
+import * as mongoose from "mongoose";
 import UserController from "./controllers/UserController";
 import TuitController from "./controllers/TuitController";
-import * as mongoose from "mongoose";
-import FollowController from './controllers/FollowController';
-import LikeController from './controllers/LikeController';
-import BookmarkController from './controllers/BookmarkController';
-import MessageController from './controllers/MessageController';
-import AuthenticationController from './controllers/AuthController';
+import LikeController from "./controllers/LikeController";
+import FollowController from "./controllers/FollowController";
+import BookmarkController from "./controllers/BookmarkController";
+import MessageController from "./controllers/MessageController";
+import AuthenticationController from "./controllers/AuthenticationController";
 
 var cors = require('cors');
-const session = require('express-session');
-const app = express(); 
-
-let sess = {
-    secret: `${process.env.SECRET}`,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        secure: false
-    },
+const session = require('express-session'); 
+const app = express();  
+const MongoStore = require('connect-mongo');
+const corsConfig = {
+    origin: 'http://localhost:3000',
+    credentials: true,
+    optionSuccessStatus: 200
 }
-app.use(session(sess));
-
-if (process.env.ENV === 'PRODUCTION') {
-    app.set('trust proxy', 1)  
-    sess.cookie.secure = true   
-}
-
-// const corsOptions = {
-//     origin: 'http://localhost:3000',
-//     credentials: true,
-//     optionSuccessStatus: 200
-// }
-
-const whitelist = ['http://localhost:3000'];
-const corsOptions = {
-  credentials: true, // This is important.
-  origin: (origin, callback) => {
-    if(whitelist.includes(origin))
-      return callback(null, true)
-
-      callback(new Error('Not allowed by CORS'));
-  }
-}
-
-app.use(cors(corsOptions));        
-app.use(express.json());
-
+app.use(cors(corsConfig));      
+app.use(express.json());    
 
 // build the connection string
 const PROTOCOL = "mongodb+srv";
@@ -78,11 +49,30 @@ const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}/${
 // connect to the database
 mongoose.connect(connectionString);
 
-app.get('/', (req: Request, res: Response) =>
-    res.send('Welcome!'));
+let sess = {
+    secret: `${process.env.SECRET}`,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: false
+    },
+    store: MongoStore.create({ mongoUrl: connectionString })
+}
+app.use(session(sess));
 
-app.get('/add/:a/:b', (req: Request, res: Response) =>
-    res.send(req.params.a + req.params.b));
+if (process.env.ENV === 'PRODUCTION') {
+    app.set('trust proxy', 1) 
+    sess.cookie.secure = true  
+}
+
+function sayHello(req: Request, res: Response) {
+    res.send('Welcome to Foundation of Software Engineering!');
+}
+
+app.get('/', sayHello); 
+
+app.get('/hello', (req: Request, res: Response) =>
+    res.send('Hello World!'));
 
 // create RESTful Web service API
 const userController = UserController.getInstance(app);
@@ -93,7 +83,6 @@ const bookmarkController = BookmarkController.getInstance(app);
 const messageController = MessageController.getInstance(app);
 const authenticationController = AuthenticationController.getInstance(app);
 
-//Start a server listening at port 4000 locally
+
 const PORT = 4000;
-// app.listen(PORT);
 app.listen(process.env.PORT || PORT);
