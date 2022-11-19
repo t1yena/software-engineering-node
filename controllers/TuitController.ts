@@ -98,6 +98,7 @@
                     && req.session['profile'] ?
                     req.session['profile']._id :
                     req.params.uid;
+        console.log(userId);
          TuitController.tuitDao.createTuit(userId, req.body)
              .then((tuit: Tuit) => res.json(tuit));
      }
