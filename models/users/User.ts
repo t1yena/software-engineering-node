@@ -22,7 +22,7 @@ export default class User {
     private email: string = '';
     private firstName: string | null;
     private lastName: string | null;
-    private profilePhoto: string;
+    private profilePhoto: string = '';
     private headerImage: string | null = null;
     private biography: string | null = null;
     private dateOfBirth: Date | null = null;
