@@ -84,7 +84,7 @@ export default class LikeDao implements LikeDaoI {
      * @param tid tuit id of tuit being liked
      * @returns Promise to be notified when like is created
      */
-     userDisikesTuit = async (uid: string, tid: string): Promise<any> =>
+     userDislikesTuit = async (uid: string, tid: string): Promise<any> =>
         LikeModel.create({tuit: tid, likedBy: uid, type: 'DISLIKE'});
 
     /**
@@ -93,7 +93,7 @@ export default class LikeDao implements LikeDaoI {
      * @param tid tuit id of tuit being liked
      * @returns Promise to be notified when like is created
      */
-    findUserDisikesTuit = async (uid: string, tid: string): Promise<any> =>
+    findUserDislikesTuit = async (uid: string, tid: string): Promise<any> =>
         LikeModel.findOne({tuit: tid, likedBy: uid, type: 'DISLIKE'});
     
     /**
@@ -103,4 +103,16 @@ export default class LikeDao implements LikeDaoI {
      */
     countHowManyDislikedTuit = async (tid: string): Promise<any> =>
         LikeModel.count({tuit: tid, type: 'DISLIKE'});
+
+        /**
+         * Update like type given user id and tuid id
+         * @param uid user id
+         * @param tid tuit id
+         * @param type type to be updated
+         * @returns Promise to be notified when type is updated
+         */
+    updateLikeType = async (uid: string, tid: string, type: string): Promise<any> => {
+        return LikeModel.updateOne(
+            {tuit: tid, likedBy: uid}, {$set:{type}})
+    }
 }
