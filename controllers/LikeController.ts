@@ -142,7 +142,7 @@
 
         try {
             const userAlreadyLikedTuit = await LikeController.likeDao.findUserLikesTuit(userId, tid);
-            const userAlreadyDislikedTuit = await LikeController.likeDao.findUserDisikesTuit(userId,tid);
+            const userAlreadyDislikedTuit = await LikeController.likeDao.findUserDislikesTuit(userId,tid);
             const howManyDislikedTuit = await LikeController.likeDao.countHowManyDislikedTuit(tid);
             const howManyLikedTuit = await LikeController.likeDao.countHowManyLikedTuit(tid);
 
