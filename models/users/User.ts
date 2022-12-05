@@ -15,7 +15,7 @@ import mongoose from "mongoose";
   * @property {string} firstName first name of user
   * @property {string} lastName last name of user
   */
-export default class User {
+  export default class User {
     private _id: string;
     private username: string = '';
     private password: string = '';

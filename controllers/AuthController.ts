@@ -1,7 +1,11 @@
 import UserDao from "../daos/UserDao";
 import {Express} from "express";
 
+<<<<<<< HEAD
 const bcrypt = require('bcrypt');
+=======
+var bcrypt = require('bcrypt');
+>>>>>>> assignment4
 const saltRounds = 10;
 
 export default class AuthenticationController{
