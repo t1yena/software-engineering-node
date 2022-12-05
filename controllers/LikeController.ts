@@ -124,4 +124,44 @@
             res.sendStatus(404);
         }
     }
+
+    /**
+     * Update tuit's dislike count based on whether user has previously disliked a tuit
+     * @param req Represents request from client, including the
+    * path parameters uid and tid representing the user that is disliking
+    * the tuit and the tuit being disliked
+    * @param res Represents response to client, including status
+    * on whether updating the dislike was successful or not
+    */
+    userTogglesTuitDislikes = async (req, res) => {
+        const uid = req.params.uid;
+        const tid = req.params.tid;
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ? profile._id : uid;
+
+        try {
+            const userAlreadyLikedTuit = await LikeController.likeDao.findUserLikesTuit(userId, tid);
+            const userAlreadyDislikedTuit = await LikeController.likeDao.findUserDislikesTuit(userId,tid);
+            const howManyDislikedTuit = await LikeController.likeDao.countHowManyDislikedTuit(tid);
+            const howManyLikedTuit = await LikeController.likeDao.countHowManyLikedTuit(tid);
+
+            let tuit = await LikeController.tuitDao.findTuitById(tid);
+            
+            if (userAlreadyLikedTuit) {
+                await LikeController.likeDao.updateLikeType(userId, tid, "DISLIKED");
+                tuit.stats.likes = howManyLikedTuit - 1;
+                tuit.stats.dislikes = howManyDislikedTuit + 1;
+            } else if (userAlreadyDislikedTuit) {
+                await LikeController.likeDao.userUnlikesTuit(userId, tid);
+                tuit.stats.dislikes = howManyDislikedTuit - 1;
+            } else {
+                await LikeController.likeDao.userDislikesTuit(userId, tid);
+                tuit.stats.likes = howManyDislikedTuit + 1;
+            };
+            await LikeController.tuitDao.updateLikes(tid, tuit.stats);
+            res.sendStatus(200);
+        } catch (e) {
+            res.sendStatus(404);
+        }
+    }
  };
