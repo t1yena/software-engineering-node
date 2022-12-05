@@ -41,10 +41,7 @@
              app.post("/api/users/:uid/likes/:tid", LikeController.likeController.userLikesTuit);
              app.delete("/api/users/:uid/unlikes/:tid", LikeController.likeController.userUnlikesTuit);
              app.put("/api/users/:uid/likes/:tid", LikeController.likeController.userTogglesTuitLikes);
-<<<<<<< HEAD
              app.put("/api/users/:uid/dislikes/:tid", LikeController.likeController.userTogglesTuitDislikes);
-=======
->>>>>>> hw4
          }
          return LikeController.likeController;
      }
@@ -69,10 +66,21 @@
       * @param {Response} res Represents response to client, including the
       * body formatted as JSON arrays containing the tuit objects that were liked
       */
-     findAllTuitsLikedByUser = (req: Request, res: Response) =>
-         LikeController.likeDao.findAllTuitsLikedByUser(req.params.uid)
-             .then(likes => res.json(likes));
- 
+    findAllTuitsLikedByUser = (req, res) => {
+        const uid = req.params.uid;
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ? profile._id : uid;
+    
+        LikeController.likeDao.findAllTuitsLikedByUser(userId)
+            .then(likes => {
+                const likesNonNullTuits = likes.filter(like => like.tuit);
+                const tuitsFromLikes = likesNonNullTuits.map(like => like.tuit);
+                res.json(tuitsFromLikes);
+            });
+    }
+          
+          
+
      /**
       * @param {Request} req Represents request from client, including the
       * path parameters uid and tid representing the user that is liking the tuit
@@ -128,7 +136,6 @@
             res.sendStatus(404);
         }
     }
-<<<<<<< HEAD
 
     /**
      * Update tuit's dislike count based on whether user has previously disliked a tuit
@@ -171,7 +178,4 @@
     }
               
  };
-=======
-              
- };
->>>>>>> hw4
+
