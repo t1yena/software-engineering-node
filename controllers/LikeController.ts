@@ -41,7 +41,10 @@
              app.post("/api/users/:uid/likes/:tid", LikeController.likeController.userLikesTuit);
              app.delete("/api/users/:uid/unlikes/:tid", LikeController.likeController.userUnlikesTuit);
              app.put("/api/users/:uid/likes/:tid", LikeController.likeController.userTogglesTuitLikes);
+<<<<<<< HEAD
              app.put("/api/users/:uid/dislikes/:tid", LikeController.likeController.userTogglesTuitDislikes);
+=======
+>>>>>>> hw4
          }
          return LikeController.likeController;
      }
@@ -125,6 +128,7 @@
             res.sendStatus(404);
         }
     }
+<<<<<<< HEAD
 
     /**
      * Update tuit's dislike count based on whether user has previously disliked a tuit
@@ -167,3 +171,7 @@
     }
               
  };
+=======
+              
+ };
+>>>>>>> hw4
