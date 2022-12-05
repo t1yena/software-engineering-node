@@ -18,13 +18,26 @@ import express from 'express';
 import {Request, Response} from "express";
 import UserController from "./controllers/UserController";
 import TuitController from "./controllers/TuitController";
-import mongoose from "mongoose";
+import * as mongoose from "mongoose";
 import FollowController from './controllers/FollowController';
 import LikeController from './controllers/LikeController';
 import BookmarkController from './controllers/BookmarkController';
 import MessageController from './controllers/MessageController';
 
- var cors = require('cors')
+var cors = require('cors')
+
+const session = require('express-session'); 
+ const app = express();  
+ const MongoStore = require('connect-mongo');
+
+ const corsConfig = {
+     origin: 'http://localhost:3000',
+     credentials: true,
+     optionSuccessStatus: 200
+ }
+ app.use(cors(corsConfig)); 
+ app.use(express.json());
+
 
 // build the connection string
 const PROTOCOL = "mongodb+srv";
@@ -39,9 +52,21 @@ const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}/${
 // connect to the database
 mongoose.connect(connectionString);
 
-const app = express();
-app.use(express.json());
-app.use(cors());
+let sess = {
+    secret: `${process.env.SECRET}`,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: false
+    },
+    store: MongoStore.create({ mongoUrl: connectionString })
+}
+app.use(session(sess));
+
+if (process.env.ENV === 'PRODUCTION') {
+   app.set('trust proxy', 1) // trust first proxy
+   sess.cookie.secure = true // serve secure cookies
+}
 
 app.get('/', (req: Request, res: Response) =>
     res.send('Welcome!'));
