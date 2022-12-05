@@ -11,7 +11,7 @@ import Like from "../models/likes/Like";
  * managing data storage of Likes
  * @property {LikeDao} likeDao Private single instance of LikeDao
  */
-export default class LikeDao implements LikeDaoI {
+ export default class LikeDao implements LikeDaoI {
     private static likeDao: LikeDao | null = null;
     public static getInstance = (): LikeDao => {
         if(LikeDao.likeDao === null) {
@@ -20,16 +20,17 @@ export default class LikeDao implements LikeDaoI {
         return LikeDao.likeDao;
     }
     private constructor() {}
+    
     /**
      * Find all users that liked a tuit
      * @param tid tuit id of tuit that was liked by users
      * @returns promise to be notified when likes are retrieved 
      */
-     findAllUsersThatLikedTuit = async (tid: string): Promise<Like[]> =>
-     LikeModel
-         .find({tuit: tid})
-         .populate("likedBy")
-         .exec();
+    findAllUsersThatLikedTuit = async (tid: string): Promise<Like[]> =>
+        LikeModel
+            .find({tuit: tid, type: 'LIKE'})
+            .populate("likedBy")
+            .exec();
 
     /**
      * Finds all tuits that a user likes
@@ -38,8 +39,13 @@ export default class LikeDao implements LikeDaoI {
      */
     findAllTuitsLikedByUser = async (uid: string): Promise<Like[]> =>
         LikeModel
-            .find({likedBy: uid})
-            .populate("tuit")
+            .find({likedBy: uid, type: 'LIKE'})
+            .populate({
+                path: "tuit",
+                populate: {
+                  path: "postedBy"
+                }
+            })
             .exec();
 
     /**
@@ -49,7 +55,7 @@ export default class LikeDao implements LikeDaoI {
      * @returns Promise to be notified when like is created
      */
     userLikesTuit = async (uid: string, tid: string): Promise<any> =>
-        LikeModel.create({tuit: tid, likedBy: uid});
+        LikeModel.create({tuit: tid, likedBy: uid, type: 'LIKE'});
 
     /**
      * Removes like instance where a user unlikes a tuit
@@ -61,30 +67,30 @@ export default class LikeDao implements LikeDaoI {
         LikeModel.deleteOne({tuit: tid, likedBy: uid});
     
     /**
-     * Creates like instance where a user likes a tuit
+     * Finds like instance where a user likes a tuit
      * @param uid user id of user liking the tuit
      * @param tid tuit id of tuit being liked
      * @returns Promise to be notified when like is created
      */
     findUserLikesTuit = async (uid: string, tid: string): Promise<any> =>
-        LikeModel.findOne({tuit: tid, likedBy: uid});
+        LikeModel.findOne({tuit: tid, likedBy: uid, type: 'LIKE'});
     
     /**
      * Counts number of likes on a tuit using LikeModel
      * @param tid tuit id of tuit being liked
      * @returns Promise to be notified when number of likes are retrieved
      */
-    countHowManyLikedTuit = async (tid: string): Promise<any> =>
-        LikeModel.count({tuit: tid});
-
-        /**
+     countHowManyLikedTuit = async (tid: string): Promise<any> =>
+        LikeModel.count({tuit: tid, type: 'LIKE'});
+    
+    /**
      * Creates like instance where a user dislikes a tuit
      * @param uid user id of user liking the tuit
      * @param tid tuit id of tuit being liked
      * @returns Promise to be notified when like is created
      */
      userDislikesTuit = async (uid: string, tid: string): Promise<any> =>
-     LikeModel.create({tuit: tid, likedBy: uid, type: 'DISLIKE'});
+        LikeModel.create({tuit: tid, likedBy: uid, type: 'DISLIKE'});
 
     /**
      * Finds like instance where a user dislikes a tuit
@@ -114,4 +120,4 @@ export default class LikeDao implements LikeDaoI {
         return LikeModel.updateOne(
             {tuit: tid, likedBy: uid}, {$set:{type}})
     }
-    }
+}
