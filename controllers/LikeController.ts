@@ -27,7 +27,6 @@
      private static likeDao: LikeDao = LikeDao.getInstance();
      private static likeController: LikeController | null = null;
      private static tuitDao: TuitDao = TuitDao.getInstance();
-
     /**
      * Creates singleton controller instance
      * @param {Express} app Express instance to declare the RESTful Web service
@@ -42,7 +41,8 @@
              app.post("/api/users/:uid/likes/:tid", LikeController.likeController.userLikesTuit);
              app.delete("/api/users/:uid/unlikes/:tid", LikeController.likeController.userUnlikesTuit);
              app.put("/api/users/:uid/likes/:tid", LikeController.likeController.userTogglesTuitLikes);
-            }
+             app.put("/api/users/:uid/dislikes/:tid", LikeController.likeController.userTogglesTuitDislikes);
+         }
          return LikeController.likeController;
      }
  
@@ -66,10 +66,21 @@
       * @param {Response} res Represents response to client, including the
       * body formatted as JSON arrays containing the tuit objects that were liked
       */
-     findAllTuitsLikedByUser = (req: Request, res: Response) =>
-         LikeController.likeDao.findAllTuitsLikedByUser(req.params.uid)
-             .then(likes => res.json(likes));
- 
+    findAllTuitsLikedByUser = (req, res) => {
+        const uid = req.params.uid;
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ? profile._id : uid;
+    
+        LikeController.likeDao.findAllTuitsLikedByUser(userId)
+            .then(likes => {
+                const likesNonNullTuits = likes.filter(like => like.tuit);
+                const tuitsFromLikes = likesNonNullTuits.map(like => like.tuit);
+                res.json(tuitsFromLikes);
+            });
+    }
+          
+          
+
      /**
       * @param {Request} req Represents request from client, including the
       * path parameters uid and tid representing the user that is liking the tuit
@@ -89,18 +100,19 @@
       * @param {Response} res Represents response to client, including status
       * on whether deleting the like was successful or not
       */
-     userUnlikesTuit = (req: Request, res: Response) =>
-         LikeController.likeDao.userUnlikesTuit(req.params.uid, req.params.tid)
-             .then(status => res.send(status));
+    userUnlikesTuit = (req: Request, res: Response) =>
+        LikeController.likeDao.userUnlikesTuit(req.params.uid, req.params.tid)
+            .then(status => res.send(status));
 
     /**
      * Update tuit's like count based on whether user has previously liked a tuit
      * @param req Represents request from client, including the
       * path parameters uid and tid representing the user that is liking
       * the tuit and the tuit being liked
-     * @param res Represents response to client, including status on whether updating the like was successful or not
+     * @param res Represents response to client, including status
+      * on whether updating the like was successful or not
      */
-     userTogglesTuitLikes = async (req, res) => {
+    userTogglesTuitLikes = async (req, res) => {
         const uid = req.params.uid;
         const tid = req.params.tid;
         const profile = req.session['profile'];
@@ -128,12 +140,12 @@
     /**
      * Update tuit's dislike count based on whether user has previously disliked a tuit
      * @param req Represents request from client, including the
-    * path parameters uid and tid representing the user that is disliking
-    * the tuit and the tuit being disliked
-    * @param res Represents response to client, including status
-    * on whether updating the dislike was successful or not
-    */
-    userTogglesTuitDislikes = async (req, res) => {
+      * path parameters uid and tid representing the user that is disliking
+      * the tuit and the tuit being disliked
+     * @param res Represents response to client, including status
+      * on whether updating the dislike was successful or not
+     */
+     userTogglesTuitDislikes = async (req, res) => {
         const uid = req.params.uid;
         const tid = req.params.tid;
         const profile = req.session['profile'];
@@ -164,4 +176,5 @@
             res.sendStatus(404);
         }
     }
+              
  };
