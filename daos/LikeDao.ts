@@ -20,18 +20,60 @@ export default class LikeDao implements LikeDaoI {
         return LikeDao.likeDao;
     }
     private constructor() {}
-    findAllUsersThatLikedTuit = async (tid: string): Promise<Like[]> =>
-        LikeModel
-            .find({tuit: tid})
-            .populate("likedBy")
-            .exec();
+    /**
+     * Find all users that liked a tuit
+     * @param tid tuit id of tuit that was liked by users
+     * @returns promise to be notified when likes are retrieved 
+     */
+     findAllUsersThatLikedTuit = async (tid: string): Promise<Like[]> =>
+     LikeModel
+         .find({tuit: tid})
+         .populate("likedBy")
+         .exec();
+
+    /**
+     * Finds all tuits that a user likes
+     * @param uid user id of user that liked the tuits
+     * @returns Promise to be notified when like are retrieved
+     */
     findAllTuitsLikedByUser = async (uid: string): Promise<Like[]> =>
         LikeModel
             .find({likedBy: uid})
             .populate("tuit")
             .exec();
+
+    /**
+     * Creates like instance where a user likes a tuit
+     * @param uid user id of user liking the tuit
+     * @param tid tuit id of tuit being liked
+     * @returns Promise to be notified when like is created
+     */
     userLikesTuit = async (uid: string, tid: string): Promise<any> =>
         LikeModel.create({tuit: tid, likedBy: uid});
+
+    /**
+     * Removes like instance where a user unlikes a tuit
+     * @param uid user id of user unliking the tuit
+     * @param tid tuit id of tuit being unliked
+     * @returns Promise to be notified when like is removed
+     */
     userUnlikesTuit = async (uid: string, tid: string): Promise<any> =>
         LikeModel.deleteOne({tuit: tid, likedBy: uid});
-}
+    
+    /**
+     * Creates like instance where a user likes a tuit
+     * @param uid user id of user liking the tuit
+     * @param tid tuit id of tuit being liked
+     * @returns Promise to be notified when like is created
+     */
+    findUserLikesTuit = async (uid: string, tid: string): Promise<any> =>
+        LikeModel.findOne({tuit: tid, likedBy: uid});
+    
+    /**
+     * Counts number of likes on a tuit using LikeModel
+     * @param tid tuit id of tuit being liked
+     * @returns Promise to be notified when number of likes are retrieved
+     */
+    countHowManyLikedTuit = async (tid: string): Promise<any> =>
+        LikeModel.count({tuit: tid});
+    }
