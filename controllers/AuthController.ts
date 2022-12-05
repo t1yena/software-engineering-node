@@ -73,12 +73,10 @@ export default class AuthenticationController{
         const match = await bcrypt.compare(password, existingUser.password);
 
         if (match) {
-            // Password match: user object stored in profile attr in session - indicates user currently logged in
             existingUser.password = '*****';
             req.session['profile'] = existingUser;
             res.json(existingUser);
         } else {
-            // Password doesn't match: forbidden error 403
             res.sendStatus(403);
             console.log("Wrong password");
         }

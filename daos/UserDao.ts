@@ -32,24 +32,55 @@
       * @returns Promise To be notified when the users are retrieved from
       * database
       */
-     findAllUsers = async (): Promise<User[]> =>
-        UserModel.find().exec();
+      async findAllUsers(): Promise<User[]> {
+        const userMongooseModels = await UserModel.find();
+        const userModels = userMongooseModels
+            .map((userMongooseModels) => {
+                return new User(
+                    userMongooseModels?._id.toString() ?? '',
+                    userMongooseModels?.username ?? '',
+                    userMongooseModels?.password ?? '',
+                    userMongooseModels?.firstName ?? '',
+                    userMongooseModels?.lastName ?? '',
+                    userMongooseModels.email ?? '',
+                );
+            });
+        return userModels;
+     }
  
      /**
       * Uses UserModel to retrieve single user document from users collection
       * @param {string} uid User's primary key
       * @returns Promise To be notified when user is retrieved from the database
       */
-     findUserById = async (uid: string): Promise<any> =>
-        UserModel.findById(uid);
+      async findUserById(uid: string): Promise<User> {
+        const userMongooseModel = await UserModel.findById(uid);
+        return new User(
+            userMongooseModel?._id.toString() ?? '',
+            userMongooseModel?.username ?? '',
+            userMongooseModel?.password ?? '',
+            userMongooseModel?.firstName ?? '',
+            userMongooseModel?.lastName ?? '',
+            userMongooseModel?.email ?? ''
+        );
+     }
  
      /**
       * Inserts user instance into the database
       * @param {User} user Instance to be inserted into the database
       * @returns Promise To be notified when user is inserted into the database
       */
-     createUser = async (user: User): Promise<User> =>
-         UserModel.create(user);
+      async createUser(user: User): Promise<User> {
+        const userMongooseModel = await UserModel.create(user);
+        return new User(
+            userMongooseModel._id.toString() ?? '',
+            userMongooseModel.username ?? '',
+            userMongooseModel.password ?? '',
+            userMongooseModel.firstName ?? '',
+            userMongooseModel.lastName ?? '',
+            userMongooseModel.email ?? ''
+        );
+     }
  
      /**
       * Updates user with new values in database
@@ -57,15 +88,11 @@
       * @param {User} user User object containing properties and their new values
       * @returns Promise To be notified when user is updated in the database
       */
-     updateUser = async (uid: string, user: User): Promise<any> =>
-         UserModel.updateOne(
-             {_id: uid},
-             {$set: user});
+      async updateUser(uid: string, user: any): Promise<any> {
+        return await UserModel.updateOne({_id: uid},
+            {$set: {username: user.username, password: user.password}});
+    }
      
-     updateUserSalaryByUsername = async (username: string, salary: number): Promise<any> =>
-         UserModel.updateOne(
-             {username},
-             {$set: {salary: salary}});
  
      /**
       * Removes user from the database.

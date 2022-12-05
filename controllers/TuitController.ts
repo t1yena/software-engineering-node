@@ -64,10 +64,15 @@
       * @param {Response} res Represents response to client, including the
       * body formatted as JSON arrays containing the tuit objects
       */
-     findAllTuitsByUser = (req: Request, res: Response) =>
+     findAllTuitsByUser = (req, res) => {
+        let userId = req.params.uid === "me"
+            && req.session['profile'] ?
+            req.session['profile']._id :
+            req.params.uid;
+
          TuitController.tuitDao.findAllTuitsByUser(req.params.uid)
              .then((tuits: Tuit[]) => res.json(tuits));
- 
+     }
      /**
       * Retrieves a tuit by their primary key
       * @param {Request} req Represents request from client, including path
@@ -88,9 +93,15 @@
       * body formatted as JSON containing the new tuit that was inserted in the
       * database
       */
-     createTuit = (req: Request, res: Response) =>
-         TuitController.tuitDao.createTuit(req.params.uid, req.body)
+     createTuit = (req, res) => {
+        let userId = req.params.uid === "me"
+                    && req.session['profile'] ?
+                    req.session['profile']._id :
+                    req.params.uid;
+        console.log(userId);
+         TuitController.tuitDao.createTuit(userId, req.body)
              .then((tuit: Tuit) => res.json(tuit));
+     }
  
      /**
       * Modifies an existing tuit instance

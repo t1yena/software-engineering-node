@@ -4,6 +4,7 @@
  */
  import Tuit from "../tuits/Tuit";
  import User from "../users/User";
+ import LikeType from "./LikeType";
  
  /**
   * @typedef Like Represents likes relationship between a user and a tuit,
@@ -15,4 +16,5 @@
  export default interface Like {
      tuit: Tuit,
      likedBy: User
+     likeType: LikeType
  };

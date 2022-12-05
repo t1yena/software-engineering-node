@@ -12,32 +12,85 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const MessageModel_1 = __importDefault(require("../mongoose/MessageModel"));
 /**
- * @file Implements DAO managing data storage of messages.
- * Uses mongoose MessageModel to integrate with MongoDB
- */
-const MessageModel_1 = __importDefault(require("../mongoose/messages/MessageModel"));
-/**
- * @class MessageDao Implements Data Access Object
- * managing data storage of Message
+ * @class MessageDao Implements Data Access Object managing data storage
+ * of Messages
  * @property {MessageDao} messageDao Private single instance of MessageDao
  */
 class MessageDao {
     constructor() {
-        this.userSendsMessage = (toUser, fromUser, message) => __awaiter(this, void 0, void 0, function* () { return MessageModel_1.default.create(Object.assign(Object.assign({}, message), { to: toUser, from: fromUser })); });
-        this.userDeletesMessage = (toUser, fromUser) => __awaiter(this, void 0, void 0, function* () { return MessageModel_1.default.deleteOne({ to: toUser, from: fromUser }); });
-        this.findSentMessages = (me) => __awaiter(this, void 0, void 0, function* () {
+        /**
+         * Inserts message instance into the database
+         * @param {string} from Primary key of the user sending the message
+         * @param {string} to Primary key of the user receiving the message
+         * @param {Message} message Instance to be inserted into the database
+         * @returns Promise To be notified when message is inserted into the database
+         */
+        this.userMessagesUser = (from, to, message) => __awaiter(this, void 0, void 0, function* () { return MessageModel_1.default.create(Object.assign(Object.assign({}, message), { from, to })); });
+        /**
+         * Removes message from the database
+         * @param {string} from Primary key of the user that sent the message
+         * @param {string} to Primary key of the user that received the message
+         * @returns Promise To be notified when message is removed from the database
+         */
+        this.userDeletesMessage = (from, to) => __awaiter(this, void 0, void 0, function* () { return MessageModel_1.default.deleteOne({ from, to }); });
+        /**
+         * Uses MessageModel to retrieve all message documents from messages collection
+         * that were sent by a given user
+         * @param {string} uid Primary key of the user that sent the messages
+         * @returns Promise To be notified when the messages are retrieved from database
+         */
+        this.findAllMessagesSent = (uid) => __awaiter(this, void 0, void 0, function* () {
             return MessageModel_1.default
-                .find({ from: me }).exec();
+                .find({ from: uid })
+                .populate("message", "to")
+                .exec();
         });
-        this.findReceivedMessages = (uid) => __awaiter(this, void 0, void 0, function* () {
+        /**
+         * Uses MessageModel to retrieve all message documents from messages collection
+         * that were received by a given user
+         * @param {string} uid Primary key of the user that received the messages
+         * @returns Promise To be notified when the messages are retrieved from database
+         */
+        this.findAllMessagesReceived = (uid) => __awaiter(this, void 0, void 0, function* () {
             return MessageModel_1.default
-                .find({ to: uid }).exec();
+                .find({ to: uid })
+                .populate("message", "from")
+                .exec();
+        });
+        /**
+         * Uses MessageModel to retrieve all message documents from messages collection
+         * that were sent to a given user
+         * @param {string} uid Primary key of the user that received the messages
+         * @returns Promise To be notified when the messages are retrieved from database
+         */
+        this.findUsersThatMessagedMe = (uid) => __awaiter(this, void 0, void 0, function* () {
+            return MessageModel_1.default
+                .find({ to: uid })
+                .populate("from")
+                .exec();
+        });
+        /**
+         * Uses MessageModel to retrieve all message documents from messages collection
+         * that were sent by a given user
+         * @param {string} uid Primary key of the user that sent the messages
+         * @returns Promise To be notified when the messages are retrieved from database
+         */
+        this.findUsersIHaveMessaged = (uid) => __awaiter(this, void 0, void 0, function* () {
+            return MessageModel_1.default
+                .find({ from: uid })
+                .populate("to")
+                .exec();
         });
     }
 }
 exports.default = MessageDao;
 MessageDao.messageDao = null;
+/**
+ * Creates singleton DAO instance
+ * @returns MessageDao
+ */
 MessageDao.getInstance = () => {
     if (MessageDao.messageDao === null) {
         MessageDao.messageDao = new MessageDao();
