@@ -25,10 +25,10 @@
  import MessageController from "./controllers/MessageController";
  import AuthenticationController from "./controllers/AuthController";
  
- const cors = require('cors');
- const session = require('express-session'); 
+ var cors = require('cors');
+ var session = require('express-session'); 
  const app = express();  
- const MongoStore = require('connect-mongo');
+ var MongoStore = require('connect-mongo');
 
  const corsConfig = {
      origin: 'http://localhost:3000',
