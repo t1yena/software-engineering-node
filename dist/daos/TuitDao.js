@@ -12,18 +12,64 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const TuitModel_1 = __importDefault(require("../mongoose/TuitModel"));
 /**
- * @class TuitDao Implements Data Access Object managing data storage
- * of Tuits
+ * @file Implements DAO managing data storage of tuits.
+ * Uses mongoose TuitModel to integrate with MongoDB
+ */
+const TuitModel_1 = __importDefault(require("../mongoose/tuits/TuitModel"));
+/**
+ * @class TuitDao Implements Data Access Object
+ * managing data storage of Tuits
  * @property {TuitDao} tuitDao Private single instance of TuitDao
  */
 class TuitDao {
-    constructor() { }
+    constructor() {
+        /**
+         * Retrieve tuits from specific user using TuitModel
+         * @param uid user's primary key
+         * @returns Promise to be notified when tuits are retrieved
+         */
+        this.findAllTuitsByUser = (uid) => __awaiter(this, void 0, void 0, function* () {
+            return TuitModel_1.default.find({ postedBy: uid })
+                .populate("postedBy")
+                .exec();
+        });
+        /**
+         * Retrieve tuit based on tuit id using TuitModel
+         * @param tid tuit's primary key
+         * @returns Promise to be notified when tuit is retrieved
+         */
+        this.findTuitById = (tid) => __awaiter(this, void 0, void 0, function* () {
+            return TuitModel_1.default.findById(tid)
+                .populate("postedBy")
+                .exec();
+        });
+        /**
+         * Update tuit values
+         * @param tid tuit id of tuit being updated
+         * @param tuit Tuit object with values to update
+         * @returns Promise to be notified when tuit is updated
+         */
+        this.updateTuit = (tid, tuit) => __awaiter(this, void 0, void 0, function* () {
+            return TuitModel_1.default.updateOne({ _id: tid }, { $set: tuit });
+        });
+        /**
+         * Remove tuit instance
+         * @param tid tuit id of tuit to be removed
+         * @returns Promise when tuit is removed
+         */
+        this.deleteTuit = (tid) => __awaiter(this, void 0, void 0, function* () { return TuitModel_1.default.deleteOne({ _id: tid }); });
+        /**
+         * Update number of likes using tuit's stats
+         * @param tid tuit id of tuit being updated
+         * @param newStats Stats object that will be updated
+         * @returns
+         */
+        this.updateLikes = (tid, newStats) => __awaiter(this, void 0, void 0, function* () { return TuitModel_1.default.updateOne({ _id: tid }, { $set: { stats: newStats } }); });
+    }
     /**
-     * Uses TuitModel to retrieve all tuit documents from tuits collection
-     * @returns Promise To be notified when the tuits are retrieved from
-     * database
+     * Retrieve all tuits from collection using TuitModel
+     * @returns Promise to be notified when all tuits are retrieved
      */
     findAllTuits() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -31,75 +77,19 @@ class TuitDao {
         });
     }
     /**
-     * Uses TuitModel to retrieve single tuit document by ID from tuits collection
-     * @param {string} tid Tuit's primary key
-     * @returns Promise To be notified when tuit is retrieved from the database
-     */
-    findTuitById(tid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield TuitModel_1.default.findById(tid).populate('postedBy', 'username').exec();
-        });
-    }
-    /**
-     * Uses TuitModel to retrieve all tuit documents from tuits collection that were posted
-     * by a particular user
-     * @param {string} uid User's primary key
-     * @returns Promise To be notified when tuits are retrieved from the database
-     */
-    findTuitsByUser(uid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield TuitModel_1.default.find({ postedBy: uid }).populate('postedBy', 'username').exec();
-        });
-    }
-    /**
-     * Inserts tuit instance into the database
-     * @param {string} uid User posting the tuit's primary key
-     * @param {Tuit} tuit Instance to be inserted into the database
-     * @returns Promise To be notified when tuit is inserted into the database
+     * Create tuit instance
+     * @param uid primary key of user creating the tuit
+     * @param tuit tuit instance to create
+     * @returns Promise to be notified when tuit is created
      */
     createTuit(uid, tuit) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield TuitModel_1.default.create(Object.assign(Object.assign({}, tuit), { postedBy: uid }));
         });
     }
-    /**
-     * Removes tuit from the database
-     * @param {string} tid Primary key of tuit to be removed
-     * @returns Promise To be notified when tuit is removed from the database
-     */
-    deleteTuit(tid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield TuitModel_1.default.deleteOne({ _id: tid });
-        });
-    }
-    /**
-     * Updates tuit with new values in database
-     * @param {string} tid Primary key of tuit to be modified
-     * @param {any} tuit Tuit object containing properties and their new values
-     * @returns Promise To be notified when tuit is updated in the database
-     */
-    updateTuit(tid, tuit) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return TuitModel_1.default.updateOne({ _id: tid }, { $set: { tuit: tuit.tuit, postedOn: tuit.postedOn, postedBy: tuit.postedBy } });
-        });
-    }
-    /**
-     * Updates the tuit's stats attribute for number of likes in database
-     * @param {string} tid Primary key of tuit to be modified
-     * @param {any} newStats Stats object to be updated for the tuit
-     */
-    updateLikes(tid, newStats) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return TuitModel_1.default.updateOne({ _id: tid }, { $set: { stats: newStats } });
-        });
-    }
 }
 exports.default = TuitDao;
 TuitDao.tuitDao = null;
-/**
- * Creates singleton DAO instance
- * @returns TuitDao
- */
 TuitDao.getInstance = () => {
     if (TuitDao.tuitDao === null) {
         TuitDao.tuitDao = new TuitDao();

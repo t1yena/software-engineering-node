@@ -133,7 +133,7 @@ export default class LikeDao implements LikeDaoI {
          * @returns Promise to be notified when type is updated
          */
     updateLikeType = async (uid: string, tid: string, type: string): Promise<any> => {
-        return LikeModel.updateOne(
+        LikeModel.updateOne(
             {tuit: tid, likedBy: uid}, {$set:{type}})
     }
 }

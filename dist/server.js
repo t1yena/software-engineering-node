@@ -1,4 +1,30 @@
 "use strict";
+/**
+/**
+ * @file Implements an Express Node HTTP server. Declares RESTful Web services
+ * enabling CRUD operations on the following resources:
+ * <ul>
+ *     <li>users</li>
+ *     <li>tuits</li>
+ *     <li>likes</li>
+ *     <li>follows</li>
+ *     <li>messages</li>
+ *     <li>bookmarks</li>
+ * </ul>
+ *
+ * Connects to a remote MongoDB instance hosted on the Atlas cloud database
+ * service
+ */
+//  import express from 'express';
+//  import {Request, Response} from "express";
+//  import UserController from "./controllers/UserController";
+//  import TuitController from "./controllers/TuitController";
+//  import mongoose from "mongoose";
+//  import FollowController from './controllers/FollowController';
+//  import LikeController from './controllers/LikeController';
+//  import BookmarkController from './controllers/BookmarkController';
+//  import MessageController from './controllers/MessageController';
+//  import AuthController from './controllers/AuthController';
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -26,63 +52,69 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-/**
- * @file Implements an Express Node HTTP server. Declares RESTful Web services
- * enabling CRUD operations on the following resources:
- * <ul>
- *     <li>users</li>
- *     <li>tuits</li>
- *     <li>likes</li>
- *     <li>follows</li>
- *     <li>bookmarks</li>
- *     <li>messages</li>
- * </ul>
- *
- * Connects to a remote MongoDB instance hosted on the Atlas cloud database
- * service
- */
+//   var cors = require('cors')
+//  // build the connection string
+//  const PROTOCOL = "mongodb+srv";
+// //  const DB_USERNAME = process.env.DB_USERNAME;
+// //  const DB_PASSWORD = process.env.DB_PASSWORD;
+//  const DB_USERNAME = "t1yena";
+//  const DB_PASSWORD = "yenawebdev";
+//  const HOST = "cluster0.bppa0ew.mongodb.net";
+//  const DB_NAME = "FSE";
+//  const DB_QUERY = "retryWrites=true&w=majority";
+//  const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}/${DB_NAME}?${DB_QUERY}`;
+//  // connect to the database
+//  mongoose.connect(connectionString);
+//  const app = express();
+//  app.use(express.json());
+//  app.use(cors());
+//  app.get('/', (req: Request, res: Response) =>
+//      res.send('Welcome!'));
+//  app.get('/add/:a/:b', (req: Request, res: Response) =>
+//      res.send(req.params.a + req.params.b));
+//  // create RESTful Web service API
+//  const userController = UserController.getInstance(app);
+//  const tuitController = TuitController.getInstance(app);
+//  const likeController = LikeController.getInstance(app);
+//  const followController = FollowController.getInstance(app);
+//  const bookmarkController = BookmarkController.getInstance(app);
+//  const messageController = MessageController.getInstance(app);
+//  const authController= AuthController.getInstance(app);
+//  //Start a server listening at port 4000 locally
+//  const PORT = 4000;
+//  app.listen(process.env.PORT || PORT);
 const express_1 = __importDefault(require("express"));
-const mongoose = __importStar(require("mongoose"));
 const UserController_1 = __importDefault(require("./controllers/UserController"));
 const TuitController_1 = __importDefault(require("./controllers/TuitController"));
-const LikeController_1 = __importDefault(require("./controllers/LikeController"));
+const mongoose = __importStar(require("mongoose"));
 const FollowController_1 = __importDefault(require("./controllers/FollowController"));
+const LikeController_1 = __importDefault(require("./controllers/LikeController"));
 const BookmarkController_1 = __importDefault(require("./controllers/BookmarkController"));
 const MessageController_1 = __importDefault(require("./controllers/MessageController"));
-const AuthenticationController_1 = __importDefault(require("./controllers/AuthenticationController"));
+const AuthController_1 = __importDefault(require("./controllers/AuthController"));
 var cors = require('cors');
-const session = require('express-session'); // express session establish identity and dialogs btwn users and servers exchanging stateless HTTP req/res
-const app = (0, express_1.default)(); // express is a library  that allows you to create HTTP servers
-const MongoStore = require('connect-mongo');
-const corsOptions = {
+var session = require('express-session');
+const app = (0, express_1.default)();
+var MongoStore = require('connect-mongo');
+const corsConfig = {
     origin: 'http://localhost:3000',
     credentials: true,
     optionSuccessStatus: 200
 };
-app.use(cors(corsOptions)); // cors is tech that allows you to have people outside your domain to connect safely to your server
-app.use(express_1.default.json()); // configuring our server so that it can parse json; json = format that data will be formatted as
-const options = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    autoIndex: false,
-    maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-    family: 4
-};
-//mongoose.connect('mongodb://localhost:27017/tuiter', options);   // connect to mongo compass - local tuiter database
-//mongoose.connect('mongodb+srv://fse_tuiter:m7RwBEdMZHSqPs0k@cluster0.3ivwj4w.mongodb.net/tuiter?retryWrites=true&w=majority',
-//options);
+app.use(cors(corsConfig));
+app.use(express_1.default.json());
 // build the connection string
 const PROTOCOL = "mongodb+srv";
-const DB_USERNAME = "fse_tuiter";
-const DB_PASSWORD = "m7RwBEdMZHSqPs0k";
-const HOST = "cluster0.3ivwj4w.mongodb.net";
-const DB_NAME = "tuiter";
+//  const DB_USERNAME = process.env.DB_USERNAME;
+//  const DB_PASSWORD = process.env.DB_PASSWORD;
+const DB_USERNAME = "t1yena";
+const DB_PASSWORD = "yenawebdev";
+const HOST = "cluster0.bppa0ew.mongodb.net";
+const DB_NAME = "FSE";
 const DB_QUERY = "retryWrites=true&w=majority";
 const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}/${DB_NAME}?${DB_QUERY}`;
 // connect to the database
-mongoose.connect(connectionString, options);
+mongoose.connect(connectionString);
 let sess = {
     secret: `${process.env.SECRET}`,
     resave: false,
@@ -94,28 +126,18 @@ let sess = {
 };
 app.use(session(sess));
 if (process.env.ENV === 'PRODUCTION') {
-    app.set('trust proxy', 1); // trust first proxy
-    sess.cookie.secure = true; // serve secure cookies
+    app.set('trust proxy', 1);
+    sess.cookie.secure = true;
 }
-function sayHello(req, res) {
-    res.send('Welcome to Foundation of Software Engineering!');
-}
-// Where we configure server to listen to incoming requests / messages
-// HTTP Methods: get, post, put, delete
-app.get('/', sayHello); // get function takes 2 args (string, function); string = pattern of url
-app.get('/hello', (req, res) => res.send('Hello World!'));
-// create RESTful Web service API
+app.get('/', (req, res) => res.send('Welcome!'));
+app.get('/add/:a/:b', (req, res) => res.send(req.params.a + req.params.b));
 const userController = UserController_1.default.getInstance(app);
 const tuitController = TuitController_1.default.getInstance(app);
+const bookmarkController = BookmarkController_1.default.getInstance(app);
 const likeController = LikeController_1.default.getInstance(app);
 const followController = FollowController_1.default.getInstance(app);
-const bookmarkController = BookmarkController_1.default.getInstance(app);
 const messageController = MessageController_1.default.getInstance(app);
-const authenticationController = AuthenticationController_1.default.getInstance(app);
-/**
- * Start a server listening at port 4000 locally
- * but use environment variable PORT on AWS if available.
- */
+const authenticationController = AuthController_1.default.getInstance(app);
 const PORT = 4000;
 app.listen(process.env.PORT || PORT);
 //# sourceMappingURL=server.js.map

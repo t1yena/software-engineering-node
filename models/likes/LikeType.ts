@@ -4,8 +4,8 @@
  */
 
  enum LikeType {
-    Like = 'LIKE',
-    Dislike = 'DISLIKE'
+    LIKE = 'LIKE',
+    DISLIKE = 'DISLIKE'
 };
 
 export default LikeType;

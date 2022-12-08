@@ -70,7 +70,7 @@
             req.session['profile']._id :
             req.params.uid;
 
-         TuitController.tuitDao.findAllTuitsByUser(req.params.uid)
+         TuitController.tuitDao.findAllTuitsByUser(userId)
              .then((tuits: Tuit[]) => res.json(tuits));
      }
      /**
