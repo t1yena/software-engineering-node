@@ -102,18 +102,22 @@ class LikeController {
                 if (userAlreadyLikedTuit) {
                     yield LikeController.likeDao.userUnlikesTuit(userId, tid);
                     tuit.stats.likes = howManyLikedTuit - 1;
-                    tuit.stats.dislikes = dislikeCount + 1;
+                    console.log('already liked!, unliking tuit');
                     // user already disliked tuit
                 }
                 else if (userAlreadyDislikedTuit) {
-                    yield LikeController.likeDao.updateLikeType(userId, tid, "LIKE");
                     tuit.stats.likes = howManyLikedTuit + 1;
                     tuit.stats.dislikes = dislikeCount - 1;
+                    // await LikeController.likeDao.updateLikeType(userId, tid, "LIKE");
+                    yield LikeController.likeDao.userUnlikesTuit(userId, tid);
+                    yield LikeController.likeDao.userLikesTuit(userId, tid);
+                    console.log('already disliked, toggling to like!');
                 }
                 // neither liked or disliked
                 else {
                     yield LikeController.likeDao.userLikesTuit(userId, tid);
                     tuit.stats.likes = howManyLikedTuit + 1;
+                    console.log("liking tuit");
                 }
                 ;
                 yield LikeController.tuitDao.updateLikes(tid, tuit.stats);
@@ -143,18 +147,22 @@ class LikeController {
                 const howManyLikedTuit = yield LikeController.likeDao.countHowManyLikedTuit(tid);
                 let tuit = yield LikeController.tuitDao.findTuitById(tid);
                 if (userAlreadyLikedTuit) {
-                    yield LikeController.likeDao.updateLikeType(userId, tid, "DISLIKE");
+                    yield LikeController.likeDao.userUnlikesTuit(userId, tid);
+                    yield LikeController.likeDao.userDislikesTuit(userId, tid);
+                    // await LikeController.likeDao.updateLikeType(userId, tid, "DISLIKE");
                     tuit.stats.likes = howManyLikedTuit - 1;
                     tuit.stats.dislikes = howManyDislikedTuit + 1;
+                    console.log("already liked, toggling to dislike");
                 }
                 else if (userAlreadyDislikedTuit) {
                     yield LikeController.likeDao.userUnlikesTuit(userId, tid);
                     tuit.stats.dislikes = howManyDislikedTuit - 1;
-                    tuit.stats.likes = howManyLikedTuit + 1;
+                    console.log("undisliking tuit");
                 }
                 else {
                     yield LikeController.likeDao.userDislikesTuit(userId, tid);
                     tuit.stats.dislikes = howManyDislikedTuit + 1;
+                    console.log("disliking tuit");
                 }
                 ;
                 yield LikeController.tuitDao.updateLikes(tid, tuit.stats);
@@ -182,6 +190,10 @@ class LikeController {
                 res.json(tuitsFromDislikes);
             });
         };
+        this.findAllLikes = (req, res) => LikeController.likeDao.findAllLikes()
+            .then(likes => res.json(likes));
+        this.deleteAllLikes = (req, res) => LikeController.likeDao.deleteAllLikes()
+            .then(status => res.json(status));
     }
 }
 exports.default = LikeController;
@@ -202,8 +214,10 @@ LikeController.getInstance = (app) => {
         app.get("/api/users/:uid/dislikes", LikeController.likeController.findAllTuitsDislikedByUser);
         app.post("/api/users/:uid/likes/:tid", LikeController.likeController.userLikesTuit);
         app.delete("/api/users/:uid/unlikes/:tid", LikeController.likeController.userUnlikesTuit);
+        app.delete("/api/likes", LikeController.likeController.deleteAllLikes);
         app.put("/api/users/:uid/likes/:tid", LikeController.likeController.userTogglesTuitLikes);
         app.put("/api/users/:uid/dislikes/:tid", LikeController.likeController.userTogglesTuitDislikes);
+        app.get("/api/likes", LikeController.likeController.findAllLikes);
     }
     return LikeController.likeController;
 };

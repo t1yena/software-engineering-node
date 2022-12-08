@@ -27,7 +27,7 @@ class LikeDao {
          */
         this.findAllUsersThatLikedTuit = (tid) => __awaiter(this, void 0, void 0, function* () {
             return LikeModel_1.default
-                .find({ tuit: tid, type: 'LIKE' })
+                .find({ tuit: tid, likeType: 'LIKE' })
                 .populate("likedBy")
                 .exec();
         });
@@ -38,7 +38,7 @@ class LikeDao {
          */
         this.findAllTuitsLikedByUser = (uid) => __awaiter(this, void 0, void 0, function* () {
             return LikeModel_1.default
-                .find({ likedBy: uid, type: 'LIKE' })
+                .find({ likedBy: uid, likeType: 'LIKE' })
                 .populate({
                 path: "tuit",
                 populate: {
@@ -69,7 +69,7 @@ class LikeDao {
          * @param tid tuit id of tuit being liked
          * @returns Promise to be notified when like is created
          */
-        this.userLikesTuit = (uid, tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.create({ tuit: tid, likedBy: uid, type: 'LIKE' }); });
+        this.userLikesTuit = (uid, tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.create({ tuit: tid, likedBy: uid, likeType: 'LIKE' }); });
         /**
          * Removes like instance where a user unlikes a tuit
          * @param uid user id of user unliking the tuit
@@ -83,33 +83,33 @@ class LikeDao {
          * @param tid tuit id of tuit being liked
          * @returns Promise to be notified when like is created
          */
-        this.findUserLikesTuit = (uid, tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.findOne({ tuit: tid, likedBy: uid, type: 'LIKE' }); });
+        this.findUserLikesTuit = (uid, tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.findOne({ tuit: tid, likedBy: uid, likeType: 'LIKE' }); });
         /**
          * Counts number of likes on a tuit using LikeModel
          * @param tid tuit id of tuit being liked
          * @returns Promise to be notified when number of likes are retrieved
          */
-        this.countHowManyLikedTuit = (tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.count({ tuit: tid, type: 'LIKE' }); });
+        this.countHowManyLikedTuit = (tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.count({ tuit: tid, likeType: 'LIKE' }); });
         /**
          * Creates like instance where a user dislikes a tuit
          * @param uid user id of user liking the tuit
          * @param tid tuit id of tuit being liked
          * @returns Promise to be notified when like is created
          */
-        this.userDislikesTuit = (uid, tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.create({ tuit: tid, likedBy: uid, type: 'DISLIKE' }); });
+        this.userDislikesTuit = (uid, tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.create({ tuit: tid, likedBy: uid, likeType: 'DISLIKE' }); });
         /**
          * Finds like instance where a user dislikes a tuit
          * @param uid user id of user liking the tuit
          * @param tid tuit id of tuit being liked
          * @returns Promise to be notified when like is created
          */
-        this.findUserDislikesTuit = (uid, tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.findOne({ tuit: tid, likedBy: uid, type: 'DISLIKE' }); });
+        this.findUserDislikesTuit = (uid, tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.findOne({ tuit: tid, likedBy: uid, likeType: 'DISLIKE' }); });
         /**
          * Counts number of likes on a tuit using LikeModel
          * @param tid tuit id of tuit being liked
          * @returns Promise to be notified when number of likes are retrieved
          */
-        this.countHowManyDislikedTuit = (tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.count({ tuit: tid, type: 'DISLIKE' }); });
+        this.countHowManyDislikedTuit = (tid) => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.count({ tuit: tid, likeType: 'DISLIKE' }); });
         /**
          * Update like type given user id and tuid id
          * @param uid user id
@@ -117,8 +117,14 @@ class LikeDao {
          * @param type type to be updated
          * @returns Promise to be notified when type is updated
          */
-        this.updateLikeType = (uid, tid, type) => __awaiter(this, void 0, void 0, function* () {
-            LikeModel_1.default.updateOne({ tuit: tid, likedBy: uid }, { $set: { type } });
+        this.updateLikeType = (uid, tid, likeType) => __awaiter(this, void 0, void 0, function* () {
+            LikeModel_1.default.updateOne({ tuit: tid, likedBy: uid }, { $set: { likeType: likeType } });
+        });
+        this.deleteAllLikes = () => __awaiter(this, void 0, void 0, function* () { return LikeModel_1.default.deleteMany({}); });
+    }
+    findAllLikes() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield LikeModel_1.default.find().exec();
         });
     }
 }
