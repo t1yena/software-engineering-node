@@ -5,6 +5,8 @@
  import LikeDao from "../daos/LikeDao";
  import LikeControllerI from "../interfaces/LikeControllerI";
  import TuitDao from "../daos/TuitDao";
+ import LikeModel from "../models/likes/Like";
+
  
  /**
   * @class LikeController Implements RESTful Web service API for likes resource.
@@ -41,8 +43,10 @@
              app.get("/api/users/:uid/dislikes", LikeController.likeController.findAllTuitsDislikedByUser);
              app.post("/api/users/:uid/likes/:tid", LikeController.likeController.userLikesTuit);
              app.delete("/api/users/:uid/unlikes/:tid", LikeController.likeController.userUnlikesTuit);
+             app.delete("/api/likes", LikeController.likeController.deleteAllLikes);
              app.put("/api/users/:uid/likes/:tid", LikeController.likeController.userTogglesTuitLikes);
              app.put("/api/users/:uid/dislikes/:tid", LikeController.likeController.userTogglesTuitDislikes);
+             app.get("/api/likes", LikeController.likeController.findAllLikes);
          }
          return LikeController.likeController;
      }
@@ -130,17 +134,21 @@
             if (userAlreadyLikedTuit) {
                 await LikeController.likeDao.userUnlikesTuit(userId, tid);
                 tuit.stats.likes = howManyLikedTuit - 1;
-                tuit.stats.dislikes = dislikeCount + 1;
+                console.log('already liked!, unliking tuit');
             // user already disliked tuit
             } else if (userAlreadyDislikedTuit) {
-                await LikeController.likeDao.updateLikeType(userId, tid, "LIKE");
                 tuit.stats.likes = howManyLikedTuit + 1;
                 tuit.stats.dislikes = dislikeCount - 1;
+                // await LikeController.likeDao.updateLikeType(userId, tid, "LIKE");
+                await LikeController.likeDao.userUnlikesTuit(userId, tid);
+                await LikeController.likeDao.userLikesTuit(userId, tid);
+                console.log('already disliked, toggling to like!');
             }
             // neither liked or disliked
             else {
                 await LikeController.likeDao.userLikesTuit(userId, tid);
                 tuit.stats.likes = howManyLikedTuit + 1;
+                console.log("liking tuit");
             };
             await LikeController.tuitDao.updateLikes(tid, tuit.stats);
             res.sendStatus(200);
@@ -172,16 +180,20 @@
             let tuit = await LikeController.tuitDao.findTuitById(tid);
             
             if (userAlreadyLikedTuit) {
-                await LikeController.likeDao.updateLikeType(userId, tid, "DISLIKE");
+                await LikeController.likeDao.userUnlikesTuit(userId, tid);
+                await LikeController.likeDao.userDislikesTuit(userId, tid);
+                // await LikeController.likeDao.updateLikeType(userId, tid, "DISLIKE");
                 tuit.stats.likes = howManyLikedTuit - 1;
                 tuit.stats.dislikes = howManyDislikedTuit + 1;
+                console.log("already liked, toggling to dislike");
             } else if (userAlreadyDislikedTuit) {
                 await LikeController.likeDao.userUnlikesTuit(userId, tid);
                 tuit.stats.dislikes = howManyDislikedTuit - 1;
-                tuit.stats.likes = howManyLikedTuit + 1;
+                console.log("undisliking tuit");
             } else {
                 await LikeController.likeDao.userDislikesTuit(userId, tid);
                 tuit.stats.dislikes = howManyDislikedTuit + 1;
+                console.log("disliking tuit");
             };
             await LikeController.tuitDao.updateLikes(tid, tuit.stats);
             res.sendStatus(200);
@@ -209,5 +221,13 @@
                 res.json(tuitsFromDislikes);
             });
     }
+
+    findAllLikes = (req: Request, res: Response) =>
+         LikeController.likeDao.findAllLikes()
+             .then(likes => res.json(likes));
+
+    deleteAllLikes = (req: Request, res: Response) =>
+    LikeController.likeDao.deleteAllLikes()
+        .then(status => res.json(status));
               
  };
